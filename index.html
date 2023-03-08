@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>CalcCorDyn</title>
+		<!--<link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAQSAAAEEgEvyUkoAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAqVJREFUOI19kc1LFAEYh5+ZcWZsXVvdNHUsbTJL1NCNiOpmRRB06AMqr10yO/QvRHSoDgXZsWNEIEFRtygqgg5pn9QK2mLsqruzNu66zn7MzkeHpWyNeq/v+3v4PbzCmYPNHyPddfmC7Sezlmtklp3kwmIpFTcLU1++FT/7vp/mPyNcG9ny5uj+DXvXLrKWQ9ywreSPklG0vVTB9pOvPmTGnk1mnv95V2MVvdTacNH2yOV9ercE6vr1gA7oADNzhXdANSCX94zVoM/7xX70yHGaIpuYmZ7Amn1ERKtYBANy18CuXXdUVQ0CLOdy1JjLpd8N3v/YyekLt/kajXLp8hUejI8zFz/ExINz9LZmEZXQyf6BgeCv+7l4fKEmaTqpX7X1weOcHx0lbZo4jsPhI0c4cewYbY17gKeE1yvBTLlaV5xftKeylsNi1mWz3sPQ0BCO6yJKEoFAgNOnTiHXhisKypo0IH6OWZ/iKXtFa5L5+u4F0akpOtrb8VyX7du28fjJE1bMGADNISjbdjXA930jZZbSogArsw+5eGGE61ev0tfTw80bN+hoWYcmTALQ1SqRmJ3G87zVLwDkS14K0CNamjf3zyKE93Jgdzv3xkZpY4KWhkqgKSRjzscwjCV279v3FwCAvrYc8BR8oKHaVxCgsV7iWzLL91gMtba2Anj9KXtrcqaUb9vUOVyvegRVhzrFYWPIp6tVoikk/4Y01ouQdMmYJi2aVgE8m8w8b9G00JC+YzgvSKRswIayafP27ksUociG9RINQRFjyQEEFFVdVfjXyIqC1tnFdDTKkuUDLiAgCALtHR3kLQvxfwCATl1na3c3kiQBoKgq/YODNIbD1Q28crk8n0gkRUny10JqAwG29/XhOI4oy7Lneh5ziQRpwyj8BHR2JpgXMeS7AAAAAElFTkSuQmCC" rel="icon" type="image/x-icon">-->
+		<link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+		<link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+		<link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+		<link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="manifest" href="/manifest.json">
+		<meta name="msapplication-TileColor" content="#ffffff">
+		<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+		<meta name="theme-color" content="#ffffff">
+		
+		<link rel="stylesheet" href="main.css">
+	</head>
+
+	<body>
+		<h1>CalcCorDyn</h1>
+		<form>
+			<input type="radio" name="typeCoteVoulue" value="typeMoyenne" id="typeMoyenne" class="tab" checked>
+			<label for="typeMoyenne" class="tabLabel">Cote moyenne</label>
+
+			<input type="radio" name="typeCoteVoulue" value="typeTolerancee" id="typeTolerancee" class="tab">
+			<label for="typeTolerancee" class="tabLabel">Cote nominale tolérancée</label>
+
+			<input type="radio" name="typeCoteVoulue" value="typeAjustee" id="typeAjustee" class="tab">
+			<label for="typeAjustee" class="tabLabel">Cote nominale ajustée</label>
+
+			<div>
+				<label class="align">
+					<span>Cote mesurée</span>
+					<input type="text" min="0" name="coteMesuree" id="coteMesuree">
+				</label>
+			</div>
+
+			<div class="tabContent moyenne">
+				<label class="align">
+					<span>moyenne</span>
+					<input type="text" min="0" name="moyenne" id="moyenne">
+				</label>
+			</div>
+
+			<div class="tabContent tolerancee">
+				<div>
+					<label class="align">
+						<span>Cote nominale</span>
+						<input type="text" min="0" name="nominaleTol" id="nominaleTol">
+					</label>
+				</div>
+
+				<div>
+					<label class="align">
+						<span>Tolérance supérieure</span>
+						<input type="text" name="toleranceSup" id="toleranceSup">
+					</label>
+				</div>
+
+				<div>
+					<label class="align">
+						<span>Tolérance inférieure</span>
+						<input type="text" name="toleranceInf" id="toleranceInf">
+					</label>
+				</div>
+			</div>
+
+			<div class="tabContent ajustee">
+				<div>
+					<label class="align">
+						<span>Cote nominale</span>
+						<input type="text" min="0" name="nominaleAju" id="nominaleAju">
+					</label>
+				</div>
+
+				<div>
+					<label class="align">
+						<span>Arbre</span>
+						<select name="arbre" id="arbre" class="aju">
+							<option value="">Selectionner</option>
+						</select>
+					</label>
+				</div>
+
+				<div>
+					<label class="align">
+						<span>Alesage</span>
+						<select name="alesage" id="alesage" class="aju">
+							<option value="">Selectionner</option>
+						</select>
+					</label>
+				</div>
+			</div>
+
+			<div>
+				<label class="align">Machine :</label>
+
+				<label class="nowrap">
+					<input type="radio" name="machine" value="tour" id="tour" checked>
+					<span>Tour</span>
+				</label>
+
+				<label class="nowrap">
+					<input type="radio" name="machine" value="fraiseuse" id="fraiseuse">
+					<span>Fraiseuse</span>
+				</label>
+			</div>
+
+			<div id="fraiseuseOnly" hidden>
+				<div>
+					<label class="align">Type de cote :</label><br>
+
+					<label class="nowrap">
+						<input type="radio" name="geometrie" value="contour" id="contour" checked>
+						<span>Contour</span>
+					</label>
+
+					<label class="nowrap">
+						<input type="radio" name="geometrie" value="poche" id="poche">
+						<span>Poche</span>
+					</label>
+
+					<label class="nowrap">
+						<input type="radio" name="geometrie" value="simple" id="simple">
+						<span>Hauteur ou cote simple</span>
+					</label>
+				</div>
+			</div>
+			
+		</form>
+
+		<div class="outputs">
+			<div>Cote max : <span id="maxText" class="output"></span></div>
+			<div>Cote moyenne : <span id="moyenneText" class="output"></span></div>
+			<div>Cote min : <span id="minText" class="output"></span></div><br>
+			<div>Correcteur d'outil : <span id="corDynText" class="output"></span></div>
+		</div>
+	</body>
+
+	
+
+	<script type="text/javascript" src="database.js"></script>
+	<script type="text/javascript" src="calc.js"></script>
+	<script type="text/javascript" src="localsave.js"></script>
+	<script type="text/javascript" src="display.js"></script>
+</html>

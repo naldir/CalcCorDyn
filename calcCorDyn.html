@@ -1,0 +1,7030 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>CalcCorDyn</title>
+		<link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAQSAAAEEgEvyUkoAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAqVJREFUOI19kc1LFAEYh5+ZcWZsXVvdNHUsbTJL1NCNiOpmRRB06AMqr10yO/QvRHSoDgXZsWNEIEFRtygqgg5pn9QK2mLsqruzNu66zn7MzkeHpWyNeq/v+3v4PbzCmYPNHyPddfmC7Sezlmtklp3kwmIpFTcLU1++FT/7vp/mPyNcG9ny5uj+DXvXLrKWQ9ywreSPklG0vVTB9pOvPmTGnk1mnv95V2MVvdTacNH2yOV9ercE6vr1gA7oADNzhXdANSCX94zVoM/7xX70yHGaIpuYmZ7Amn1ERKtYBANy18CuXXdUVQ0CLOdy1JjLpd8N3v/YyekLt/kajXLp8hUejI8zFz/ExINz9LZmEZXQyf6BgeCv+7l4fKEmaTqpX7X1weOcHx0lbZo4jsPhI0c4cewYbY17gKeE1yvBTLlaV5xftKeylsNi1mWz3sPQ0BCO6yJKEoFAgNOnTiHXhisKypo0IH6OWZ/iKXtFa5L5+u4F0akpOtrb8VyX7du28fjJE1bMGADNISjbdjXA930jZZbSogArsw+5eGGE61ev0tfTw80bN+hoWYcmTALQ1SqRmJ3G87zVLwDkS14K0CNamjf3zyKE93Jgdzv3xkZpY4KWhkqgKSRjzscwjCV279v3FwCAvrYc8BR8oKHaVxCgsV7iWzLL91gMtba2Anj9KXtrcqaUb9vUOVyvegRVhzrFYWPIp6tVoikk/4Y01ouQdMmYJi2aVgE8m8w8b9G00JC+YzgvSKRswIayafP27ksUociG9RINQRFjyQEEFFVdVfjXyIqC1tnFdDTKkuUDLiAgCALtHR3kLQvxfwCATl1na3c3kiQBoKgq/YODNIbD1Q28crk8n0gkRUny10JqAwG29/XhOI4oy7Lneh5ziQRpwyj8BHR2JpgXMeS7AAAAAElFTkSuQmCC" rel="icon" type="image/x-icon">
+		<meta name="msapplication-TileColor" content="#ffffff">
+		<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+		<meta name="theme-color" content="#ffffff">
+		
+		<style>
+			body {
+				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+				margin: 0 20px 0 20px;
+				accent-color: #1b5e20;
+				text-indent:1em hanging each-line;
+			}
+			
+
+			input.tab { display: none; }
+			input.tab + label { display: inline-block }
+			.tabContent { display: none }
+			input.tab#typeMoyenne:checked ~ .tabContent.moyenne,
+			input.tab#typeTolerancee:checked ~ .tabContent.tolerancee,
+			input.tab#typeAjustee:checked ~ .tabContent.ajustee { display: block; }
+
+			input.tab + label {
+				border: 1px solid grey;
+				background: white;
+				padding: 6px 12px;
+				border-radius: 2px;
+				position: relative;
+				top: 1px;
+				margin-bottom: 12px;
+				line-height: normal;
+				box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 7px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -1px rgba(0, 0, 0, 0.2);
+			}
+
+			input.tab:checked + label {
+				color: #1b5e20;
+				background: white;
+				/*text-decoration: underline 4px solid #d50000;*/
+				text-underline-offset : 5px;   
+				position: relative;
+				z-index : 1;
+    			font-weight: bold;
+			}
+
+			input.tab:checked + label:before {  
+				content : "";
+				position: absolute;
+				left: 10px;
+				width: calc(100% - 20px);
+				bottom  : 0;
+				height  : 4px;
+				border-bottom: 4px solid #1b5e20;
+			}
+
+			form {
+				line-height: 1.8em;
+			}
+
+			form select, form input {
+				background-color: white;
+				border: 1px solid grey;
+				border-radius: 2px;
+			}
+
+			form label.align {
+				display: inline-block;
+				min-width: 150px;
+			}
+
+			form label.align + input:not([type = radio]), select, textarea {
+				box-sizing: border-box;
+				display: inline-block;
+				width: 100px;
+			}
+
+			.output {
+				line-height: 1.25em;
+			}
+
+			form > div {
+				margin-bottom: 1em;
+			}
+
+			h1 {
+				margin-left: min(10vw, 100px);
+				color: #1b5e20;
+			}
+
+			@media all and (width <= 640px) {
+				input.tab + label {
+					width: calc(100vw - 60px);
+					margin: 3px 0 3px 0;
+					text-align: center;
+				}
+
+				input.tab + label:last-of-type {
+					margin-bottom: 1em;
+				}
+
+				.tabContent > div {
+					display: block;
+				}
+
+				h1 {
+					margin-left: 0;
+					text-align: center;
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1>CalcCorDyn</h1>
+		<form>
+			<input type="radio" name="typeCoteVoulue" value="typeMoyenne" id="typeMoyenne" class="tab" checked>
+			<label for="typeMoyenne" class="tabLabel">Cote moyenne</label>
+
+			<input type="radio" name="typeCoteVoulue" value="typeTolerancee" id="typeTolerancee" class="tab">
+			<label for="typeTolerancee" class="tabLabel">Cote nominale tolérancée</label>
+
+			<input type="radio" name="typeCoteVoulue" value="typeAjustee" id="typeAjustee" class="tab">
+			<label for="typeAjustee" class="tabLabel">Cote nominale ajustée</label>
+
+			<div>
+				<label for="coteMesuree" class="align">Cote mesurée</label>
+				<input type="text" min="0" name="coteMesuree" id="coteMesuree">
+			</div>
+
+			<div class="tabContent moyenne">
+				<label for="moyenne" class="align">Cote moyenne</label>
+				<input type="text" min="0" name="moyenne" id="moyenne">
+			</div>
+
+			<div class="tabContent tolerancee">
+				<div>
+					<label for="nominaleTol" class="align">Cote nominale</label>
+					<input type="text" min="0" name="nominaleTol" id="nominaleTol">
+				</div>
+
+				<div>
+					<label for="toleranceSup" class="align">Tolérance supérieure</label>
+					<input type="text" name="toleranceSup" id="toleranceSup">
+				</div>
+
+				<div>
+					<label for="toleranceInf" class="align">Tolérance inférieure</label>
+					<input type="text" name="toleranceInf" id="toleranceInf">
+				</div>
+			</div>
+
+			<div class="tabContent ajustee">
+				<div>
+					<label for="nominaleAju" class="align">Cote nominale</label>
+					<input type="text" min="0" name="nominaleAju" id="nominaleAju">
+				</div>
+
+				<div>
+					<label for="arbre" class="align">Arbre</label>
+					<select name="arbre" id="arbre" class="aju">
+						<option value="">Selectionner</option>
+						<option value="d9">d9</option>
+						<option value="e8">e8</option>
+						<option value="g6">g6</option>
+						<option value="h5">h5</option>
+						<option value="js5">js5</option>
+						<option value="js6">js6</option>
+						<option value="js13">js13</option>
+						<option value="js14">js14</option>
+						<option value="k5">k5</option>
+						<option value="m5">m5</option>
+						<option value="n5">n5</option>
+						<option value="n6">n6</option>
+						<option value="p6">p6</option>
+						<option value="r6">r6</option>
+						<option value="s6">s6</option>
+						<option value="s7">s7</option>
+					</select>
+				</div>
+
+				<div>
+					<label for="alesage" class="align">Alesage</label>
+					<select name="alesage" id="alesage" class="aju">
+						<option value="">Selectionner</option>
+						<option value="D10">D10</option>
+						<option value="E9">E9</option>
+						<option value="F7">F7</option>
+						<option value="F8">F8</option>
+						<option value="G7">G7</option>
+						<option value="G9">G9</option>
+						<option value="H6">H6</option>
+						<option value="H7">H7</option>
+						<option value="H8">H8</option>
+						<option value="H9">H9</option>
+						<option value="H11">H11</option>
+						<option value="H12">H12</option>
+						<option value="H13">H13</option>
+						<option value="JS7">JS7</option>
+						<option value="JS9">JS9</option>
+						<option value="K6">K6</option>
+						<option value="K7">K7</option>
+						<option value="M6">M6</option>
+						<option value="M7">M7</option>
+						<option value="N7">N7</option>
+						<option value="N9">N9</option>
+						<option value="P7">P7</option>
+						<option value="P9">P9</option>
+					</select>
+				</div>
+			</div>
+
+			<div>
+				<label class="align">Machine :</label>
+
+				<input type="radio" name="machine" value="tour" id="tour">
+				<label for="tour">Tour</label>
+
+				<input type="radio" name="machine" value="fraiseuse" id="fraiseuse">
+				<label for="fraiseuse">Fraiseuse</label>
+			</div>
+
+			<div id="fraiseuseOnly" hidden>
+				<div>
+					<label class="align">Type de cote :</label>
+
+					<input type="radio" name="position" value="exterieure" id="exterieure">
+					<label for="exterieure">Extérieure</label>
+
+					<input type="radio" name="position" value="interieure" id="interieure">
+					<label for="interieure">Intérieure</label>
+
+					<input type="radio" name="position" value="hauteur" id="hauteur">
+					<label for="hauteur">Hauteur</label>
+				</div>
+
+				<div id="div2faces">
+					<input type="checkbox" name="2faces" id="2faces" checked>
+					<label for="2faces">L'outil a usiné les 2 faces mesurées</label>
+				</div>
+			</div>
+			
+		</form>
+
+		<div>Cote max : <span id="maxText" class="output"></span></div>
+		<div>Cote min : <span id="minText" class="output"></span></div>
+		<div>Cote moyenne : <span id="moyenneText" class="output"></span></div>
+		<div>Correcteur d'outil : <span id="corDynText" class="output"></span></div>
+	</body>
+
+	<script>
+		dataTolerance = [
+			{
+			"upperTolerance": 60,
+			"lowerTolerance": 20,
+			"toleranceClass": "D10",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 78,
+			"lowerTolerance": 30,
+			"toleranceClass": "D10",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 98,
+			"lowerTolerance": 40,
+			"toleranceClass": "D10",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 120,
+			"lowerTolerance": 50,
+			"toleranceClass": "D10",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 149,
+			"lowerTolerance": 65,
+			"toleranceClass": "D10",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 180,
+			"lowerTolerance": 80,
+			"toleranceClass": "D10",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 220,
+			"lowerTolerance": 100,
+			"toleranceClass": "D10",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 220,
+			"lowerTolerance": 100,
+			"toleranceClass": "D10",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 260,
+			"lowerTolerance": 120,
+			"toleranceClass": "D10",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 260,
+			"lowerTolerance": 120,
+			"toleranceClass": "D10",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 305,
+			"lowerTolerance": 145,
+			"toleranceClass": "D10",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 305,
+			"lowerTolerance": 145,
+			"toleranceClass": "D10",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 305,
+			"lowerTolerance": 145,
+			"toleranceClass": "D10",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 335,
+			"lowerTolerance": 170,
+			"toleranceClass": "D10",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 335,
+			"lowerTolerance": 170,
+			"toleranceClass": "D10",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 335,
+			"lowerTolerance": 170,
+			"toleranceClass": "D10",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 400,
+			"lowerTolerance": 190,
+			"toleranceClass": "D10",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 400,
+			"lowerTolerance": 190,
+			"toleranceClass": "D10",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 440,
+			"lowerTolerance": 210,
+			"toleranceClass": "D10",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 440,
+			"lowerTolerance": 210,
+			"toleranceClass": "D10",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 39,
+			"lowerTolerance": 14,
+			"toleranceClass": "E9",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 50,
+			"lowerTolerance": 20,
+			"toleranceClass": "E9",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 61,
+			"lowerTolerance": 25,
+			"toleranceClass": "E9",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 75,
+			"lowerTolerance": 32,
+			"toleranceClass": "E9",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 92,
+			"lowerTolerance": 40,
+			"toleranceClass": "E9",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 112,
+			"lowerTolerance": 50,
+			"toleranceClass": "E9",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 134,
+			"lowerTolerance": 60,
+			"toleranceClass": "E9",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 134,
+			"lowerTolerance": 60,
+			"toleranceClass": "E9",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 159,
+			"lowerTolerance": 72,
+			"toleranceClass": "E9",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 159,
+			"lowerTolerance": 72,
+			"toleranceClass": "E9",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 185,
+			"lowerTolerance": 85,
+			"toleranceClass": "E9",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 185,
+			"lowerTolerance": 85,
+			"toleranceClass": "E9",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 185,
+			"lowerTolerance": 85,
+			"toleranceClass": "E9",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 215,
+			"lowerTolerance": 110,
+			"toleranceClass": "E9",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 215,
+			"lowerTolerance": 110,
+			"toleranceClass": "E9",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 215,
+			"lowerTolerance": 110,
+			"toleranceClass": "E9",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 240,
+			"lowerTolerance": 110,
+			"toleranceClass": "E9",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 240,
+			"lowerTolerance": 110,
+			"toleranceClass": "E9",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 265,
+			"lowerTolerance": 125,
+			"toleranceClass": "E9",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 265,
+			"lowerTolerance": 125,
+			"toleranceClass": "E9",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 16,
+			"lowerTolerance": 6,
+			"toleranceClass": "F7",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 22,
+			"lowerTolerance": 10,
+			"toleranceClass": "F7",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 28,
+			"lowerTolerance": 13,
+			"toleranceClass": "F7",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 34,
+			"lowerTolerance": 16,
+			"toleranceClass": "F7",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 41,
+			"lowerTolerance": 20,
+			"toleranceClass": "F7",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 50,
+			"lowerTolerance": 25,
+			"toleranceClass": "F7",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 60,
+			"lowerTolerance": 30,
+			"toleranceClass": "F7",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 60,
+			"lowerTolerance": 30,
+			"toleranceClass": "F7",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 71,
+			"lowerTolerance": 36,
+			"toleranceClass": "F7",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 71,
+			"lowerTolerance": 36,
+			"toleranceClass": "F7",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 83,
+			"lowerTolerance": 43,
+			"toleranceClass": "F7",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 83,
+			"lowerTolerance": 43,
+			"toleranceClass": "F7",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 83,
+			"lowerTolerance": 43,
+			"toleranceClass": "F7",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 96,
+			"lowerTolerance": 50,
+			"toleranceClass": "F7",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 96,
+			"lowerTolerance": 50,
+			"toleranceClass": "F7",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 96,
+			"lowerTolerance": 50,
+			"toleranceClass": "F7",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 108,
+			"lowerTolerance": 56,
+			"toleranceClass": "F7",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 108,
+			"lowerTolerance": 56,
+			"toleranceClass": "F7",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 119,
+			"lowerTolerance": 62,
+			"toleranceClass": "F7",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 119,
+			"lowerTolerance": 62,
+			"toleranceClass": "F7",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 20,
+			"lowerTolerance": 10,
+			"toleranceClass": "F8",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 28,
+			"lowerTolerance": 10,
+			"toleranceClass": "F8",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 35,
+			"lowerTolerance": 13,
+			"toleranceClass": "F8",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 43,
+			"lowerTolerance": 16,
+			"toleranceClass": "F8",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 53,
+			"lowerTolerance": 20,
+			"toleranceClass": "F8",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 64,
+			"lowerTolerance": 25,
+			"toleranceClass": "F8",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 76,
+			"lowerTolerance": 30,
+			"toleranceClass": "F8",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 76,
+			"lowerTolerance": 30,
+			"toleranceClass": "F8",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 90,
+			"lowerTolerance": 36,
+			"toleranceClass": "F8",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 90,
+			"lowerTolerance": 36,
+			"toleranceClass": "F8",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 106,
+			"lowerTolerance": 43,
+			"toleranceClass": "F8",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 106,
+			"lowerTolerance": 43,
+			"toleranceClass": "F8",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 106,
+			"lowerTolerance": 43,
+			"toleranceClass": "F8",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 122,
+			"lowerTolerance": 50,
+			"toleranceClass": "F8",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 122,
+			"lowerTolerance": 50,
+			"toleranceClass": "F8",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 122,
+			"lowerTolerance": 50,
+			"toleranceClass": "F8",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 137,
+			"lowerTolerance": 56,
+			"toleranceClass": "F8",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 137,
+			"lowerTolerance": 56,
+			"toleranceClass": "F8",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 151,
+			"lowerTolerance": 62,
+			"toleranceClass": "F8",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 151,
+			"lowerTolerance": 62,
+			"toleranceClass": "F8",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 12,
+			"lowerTolerance": 2,
+			"toleranceClass": "G7",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 16,
+			"lowerTolerance": 4,
+			"toleranceClass": "G7",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 20,
+			"lowerTolerance": 5,
+			"toleranceClass": "G7",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 24,
+			"lowerTolerance": 6,
+			"toleranceClass": "G7",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 28,
+			"lowerTolerance": 7,
+			"toleranceClass": "G7",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 34,
+			"lowerTolerance": 9,
+			"toleranceClass": "G7",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 40,
+			"lowerTolerance": 10,
+			"toleranceClass": "G7",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 40,
+			"lowerTolerance": 10,
+			"toleranceClass": "G7",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 47,
+			"lowerTolerance": 12,
+			"toleranceClass": "G7",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 47,
+			"lowerTolerance": 12,
+			"toleranceClass": "G7",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 54,
+			"lowerTolerance": 14,
+			"toleranceClass": "G7",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 54,
+			"lowerTolerance": 14,
+			"toleranceClass": "G7",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 54,
+			"lowerTolerance": 14,
+			"toleranceClass": "G7",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 61,
+			"lowerTolerance": 15,
+			"toleranceClass": "G7",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 61,
+			"lowerTolerance": 15,
+			"toleranceClass": "G7",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 61,
+			"lowerTolerance": 15,
+			"toleranceClass": "G7",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 69,
+			"lowerTolerance": 17,
+			"toleranceClass": "G7",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 69,
+			"lowerTolerance": 17,
+			"toleranceClass": "G7",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 75,
+			"lowerTolerance": 18,
+			"toleranceClass": "G7",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 75,
+			"lowerTolerance": 18,
+			"toleranceClass": "G7",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 27,
+			"lowerTolerance": 2,
+			"toleranceClass": "G9",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 34,
+			"lowerTolerance": 4,
+			"toleranceClass": "G9",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 41,
+			"lowerTolerance": 5,
+			"toleranceClass": "G9",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 49,
+			"lowerTolerance": 6,
+			"toleranceClass": "G9",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 59,
+			"lowerTolerance": 7,
+			"toleranceClass": "G9",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 71,
+			"lowerTolerance": 9,
+			"toleranceClass": "G9",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": 0,
+			"toleranceClass": "G9",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": 0,
+			"toleranceClass": "G9",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": 0,
+			"toleranceClass": "G9",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": 0,
+			"toleranceClass": "G9",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": 0,
+			"toleranceClass": "G9",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": -50,
+			"lowerTolerance": -90,
+			"toleranceClass": "G9",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": -53,
+			"lowerTolerance": -93,
+			"toleranceClass": "G9",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": 0,
+			"toleranceClass": "G9",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": -63,
+			"lowerTolerance": -109,
+			"toleranceClass": "G9",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": -67,
+			"lowerTolerance": -113,
+			"toleranceClass": "G9",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": 0,
+			"toleranceClass": "G9",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": -78,
+			"lowerTolerance": -130,
+			"toleranceClass": "G9",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": 0,
+			"toleranceClass": "G9",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": -93,
+			"lowerTolerance": -150,
+			"toleranceClass": "G9",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 6,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 8,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 9,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 11,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 13,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 16,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 19,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 19,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 22,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 22,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 25,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 25,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 25,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 29,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 29,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 29,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 32,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 32,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 36,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 36,
+			"lowerTolerance": 0,
+			"toleranceClass": "H6",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 10,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 12,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 15,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 18,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 21,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 25,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 30,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 30,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 35,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 35,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 40,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 40,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 40,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 46,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 46,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 46,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 52,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 52,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 57,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 57,
+			"lowerTolerance": 0,
+			"toleranceClass": "H7",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 14,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 18,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 22,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 27,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 33,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 39,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 46,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 46,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 54,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 54,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 63,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 63,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 63,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 72,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 72,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 72,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 81,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 81,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 89,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 89,
+			"lowerTolerance": 0,
+			"toleranceClass": "H8",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 25,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 30,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 36,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 43,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 52,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 62,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 74,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 74,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 87,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 87,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 100,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 100,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 100,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 115,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 115,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 115,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 130,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 130,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 140,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 140,
+			"lowerTolerance": 0,
+			"toleranceClass": "H9",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 60,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 75,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 90,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 110,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 130,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 160,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 190,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 190,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 220,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 220,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 250,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 250,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 250,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 290,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 290,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 290,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 320,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 320,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 360,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 360,
+			"lowerTolerance": 0,
+			"toleranceClass": "H11",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 100,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 120,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 150,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 180,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 210,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 250,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 300,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 300,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 350,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 350,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 400,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 400,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 400,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 460,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 460,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 460,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 520,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 520,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 570,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 570,
+			"lowerTolerance": 0,
+			"toleranceClass": "H12",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 140,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 180,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 220,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 270,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 330,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 390,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 460,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 460,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 540,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 540,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 630,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 630,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 630,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 720,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 720,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 720,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 810,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 810,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 890,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 890,
+			"lowerTolerance": 0,
+			"toleranceClass": "H13",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 5,
+			"lowerTolerance": -5,
+			"toleranceClass": "JS7",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 6,
+			"lowerTolerance": -6,
+			"toleranceClass": "JS7",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 7.5,
+			"lowerTolerance": -7.5,
+			"toleranceClass": "JS7",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 9,
+			"lowerTolerance": -9,
+			"toleranceClass": "JS7",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 10.5,
+			"lowerTolerance": -10.5,
+			"toleranceClass": "JS7",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 12.5,
+			"lowerTolerance": -12.5,
+			"toleranceClass": "JS7",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 15,
+			"lowerTolerance": -15,
+			"toleranceClass": "JS7",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 15,
+			"lowerTolerance": -15,
+			"toleranceClass": "JS7",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 17.5,
+			"lowerTolerance": -17.5,
+			"toleranceClass": "JS7",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 17.5,
+			"lowerTolerance": -17.5,
+			"toleranceClass": "JS7",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 20,
+			"lowerTolerance": -20,
+			"toleranceClass": "JS7",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 20,
+			"lowerTolerance": -20,
+			"toleranceClass": "JS7",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 20,
+			"lowerTolerance": -20,
+			"toleranceClass": "JS7",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 23,
+			"lowerTolerance": -23,
+			"toleranceClass": "JS7",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 23,
+			"lowerTolerance": -23,
+			"toleranceClass": "JS7",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 23,
+			"lowerTolerance": -23,
+			"toleranceClass": "JS7",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 26,
+			"lowerTolerance": -26,
+			"toleranceClass": "JS7",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 26,
+			"lowerTolerance": -26,
+			"toleranceClass": "JS7",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 28.5,
+			"lowerTolerance": -28.5,
+			"toleranceClass": "JS7",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 28.5,
+			"lowerTolerance": -28.5,
+			"toleranceClass": "JS7",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 12.5,
+			"lowerTolerance": -12.5,
+			"toleranceClass": "JS9",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 15,
+			"lowerTolerance": -15,
+			"toleranceClass": "JS9",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 18,
+			"lowerTolerance": -18,
+			"toleranceClass": "JS9",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 21.5,
+			"lowerTolerance": -21.5,
+			"toleranceClass": "JS9",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 26,
+			"lowerTolerance": -26,
+			"toleranceClass": "JS9",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 31,
+			"lowerTolerance": -31,
+			"toleranceClass": "JS9",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 37,
+			"lowerTolerance": -37,
+			"toleranceClass": "JS9",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 37,
+			"lowerTolerance": -37,
+			"toleranceClass": "JS9",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 43.5,
+			"lowerTolerance": -43.5,
+			"toleranceClass": "JS9",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 43.5,
+			"lowerTolerance": -43.5,
+			"toleranceClass": "JS9",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 50,
+			"lowerTolerance": -50,
+			"toleranceClass": "JS9",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 50,
+			"lowerTolerance": -50,
+			"toleranceClass": "JS9",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 50,
+			"lowerTolerance": -50,
+			"toleranceClass": "JS9",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 57.5,
+			"lowerTolerance": -57.5,
+			"toleranceClass": "JS9",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 57.5,
+			"lowerTolerance": -57.5,
+			"toleranceClass": "JS9",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 57.5,
+			"lowerTolerance": -57.5,
+			"toleranceClass": "JS9",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 65,
+			"lowerTolerance": -65,
+			"toleranceClass": "JS9",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 65,
+			"lowerTolerance": -65,
+			"toleranceClass": "JS9",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 70,
+			"lowerTolerance": -70,
+			"toleranceClass": "JS9",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 70,
+			"lowerTolerance": -70,
+			"toleranceClass": "JS9",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -6,
+			"toleranceClass": "K6",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 2,
+			"lowerTolerance": -6,
+			"toleranceClass": "K6",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 2,
+			"lowerTolerance": -7,
+			"toleranceClass": "K6",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 2,
+			"lowerTolerance": -9,
+			"toleranceClass": "K6",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 2,
+			"lowerTolerance": -11,
+			"toleranceClass": "K6",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 3,
+			"lowerTolerance": -13,
+			"toleranceClass": "K6",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 4,
+			"lowerTolerance": -15,
+			"toleranceClass": "K6",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 4,
+			"lowerTolerance": -15,
+			"toleranceClass": "K6",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 4,
+			"lowerTolerance": -18,
+			"toleranceClass": "K6",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 4,
+			"lowerTolerance": -18,
+			"toleranceClass": "K6",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 4,
+			"lowerTolerance": -21,
+			"toleranceClass": "K6",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 4,
+			"lowerTolerance": -21,
+			"toleranceClass": "K6",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 4,
+			"lowerTolerance": -21,
+			"toleranceClass": "K6",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 5,
+			"lowerTolerance": -24,
+			"toleranceClass": "K6",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 5,
+			"lowerTolerance": -24,
+			"toleranceClass": "K6",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 5,
+			"lowerTolerance": -24,
+			"toleranceClass": "K6",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 5,
+			"lowerTolerance": -27,
+			"toleranceClass": "K6",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 5,
+			"lowerTolerance": -27,
+			"toleranceClass": "K6",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 7,
+			"lowerTolerance": -29,
+			"toleranceClass": "K6",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 7,
+			"lowerTolerance": -29,
+			"toleranceClass": "K6",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -10,
+			"toleranceClass": "K7",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 3,
+			"lowerTolerance": -9,
+			"toleranceClass": "K7",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 5,
+			"lowerTolerance": -10,
+			"toleranceClass": "K7",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 6,
+			"lowerTolerance": -12,
+			"toleranceClass": "K7",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 6,
+			"lowerTolerance": -15,
+			"toleranceClass": "K7",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 7,
+			"lowerTolerance": -18,
+			"toleranceClass": "K7",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 9,
+			"lowerTolerance": -21,
+			"toleranceClass": "K7",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 9,
+			"lowerTolerance": -21,
+			"toleranceClass": "K7",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 10,
+			"lowerTolerance": -25,
+			"toleranceClass": "K7",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 10,
+			"lowerTolerance": -25,
+			"toleranceClass": "K7",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 12,
+			"lowerTolerance": -28,
+			"toleranceClass": "K7",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 12,
+			"lowerTolerance": -28,
+			"toleranceClass": "K7",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 12,
+			"lowerTolerance": -28,
+			"toleranceClass": "K7",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 13,
+			"lowerTolerance": -33,
+			"toleranceClass": "K7",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 13,
+			"lowerTolerance": -33,
+			"toleranceClass": "K7",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 13,
+			"lowerTolerance": -33,
+			"toleranceClass": "K7",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 16,
+			"lowerTolerance": -36,
+			"toleranceClass": "K7",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 16,
+			"lowerTolerance": -36,
+			"toleranceClass": "K7",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 17,
+			"lowerTolerance": -40,
+			"toleranceClass": "K7",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 17,
+			"lowerTolerance": -40,
+			"toleranceClass": "K7",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": -2,
+			"lowerTolerance": -8,
+			"toleranceClass": "M6",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": -1,
+			"lowerTolerance": -9,
+			"toleranceClass": "M6",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": -3,
+			"lowerTolerance": -12,
+			"toleranceClass": "M6",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": -4,
+			"lowerTolerance": -15,
+			"toleranceClass": "M6",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": -4,
+			"lowerTolerance": -17,
+			"toleranceClass": "M6",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": -4,
+			"lowerTolerance": -20,
+			"toleranceClass": "M6",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": -5,
+			"lowerTolerance": -24,
+			"toleranceClass": "M6",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": -5,
+			"lowerTolerance": -24,
+			"toleranceClass": "M6",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": -6,
+			"lowerTolerance": -28,
+			"toleranceClass": "M6",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": -6,
+			"lowerTolerance": -28,
+			"toleranceClass": "M6",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": -8,
+			"lowerTolerance": -33,
+			"toleranceClass": "M6",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": -8,
+			"lowerTolerance": -33,
+			"toleranceClass": "M6",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": -8,
+			"lowerTolerance": -33,
+			"toleranceClass": "M6",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": -8,
+			"lowerTolerance": -37,
+			"toleranceClass": "M6",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": -8,
+			"lowerTolerance": -37,
+			"toleranceClass": "M6",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": -8,
+			"lowerTolerance": -37,
+			"toleranceClass": "M6",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": -9,
+			"lowerTolerance": -41,
+			"toleranceClass": "M6",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": -9,
+			"lowerTolerance": -41,
+			"toleranceClass": "M6",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": -10,
+			"lowerTolerance": -46,
+			"toleranceClass": "M6",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": -10,
+			"lowerTolerance": -46,
+			"toleranceClass": "M6",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": -2,
+			"lowerTolerance": -12,
+			"toleranceClass": "M7",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -12,
+			"toleranceClass": "M7",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -15,
+			"toleranceClass": "M7",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -18,
+			"toleranceClass": "M7",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -21,
+			"toleranceClass": "M7",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -25,
+			"toleranceClass": "M7",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -30,
+			"toleranceClass": "M7",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -30,
+			"toleranceClass": "M7",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -35,
+			"toleranceClass": "M7",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -35,
+			"toleranceClass": "M7",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -40,
+			"toleranceClass": "M7",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -40,
+			"toleranceClass": "M7",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -40,
+			"toleranceClass": "M7",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -46,
+			"toleranceClass": "M7",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -46,
+			"toleranceClass": "M7",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -46,
+			"toleranceClass": "M7",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -52,
+			"toleranceClass": "M7",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -52,
+			"toleranceClass": "M7",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -57,
+			"toleranceClass": "M7",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -57,
+			"toleranceClass": "M7",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": -4,
+			"lowerTolerance": -14,
+			"toleranceClass": "N7",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": -4,
+			"lowerTolerance": -16,
+			"toleranceClass": "N7",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": -4,
+			"lowerTolerance": -19,
+			"toleranceClass": "N7",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": -5,
+			"lowerTolerance": -23,
+			"toleranceClass": "N7",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": -7,
+			"lowerTolerance": -28,
+			"toleranceClass": "N7",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": -8,
+			"lowerTolerance": -33,
+			"toleranceClass": "N7",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": -9,
+			"lowerTolerance": -39,
+			"toleranceClass": "N7",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": -9,
+			"lowerTolerance": -39,
+			"toleranceClass": "N7",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": -10,
+			"lowerTolerance": -45,
+			"toleranceClass": "N7",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": -10,
+			"lowerTolerance": -45,
+			"toleranceClass": "N7",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": -12,
+			"lowerTolerance": -52,
+			"toleranceClass": "N7",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": -12,
+			"lowerTolerance": -52,
+			"toleranceClass": "N7",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": -12,
+			"lowerTolerance": -52,
+			"toleranceClass": "N7",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": -14,
+			"lowerTolerance": -60,
+			"toleranceClass": "N7",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": -14,
+			"lowerTolerance": -60,
+			"toleranceClass": "N7",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": -14,
+			"lowerTolerance": -60,
+			"toleranceClass": "N7",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": -14,
+			"lowerTolerance": -66,
+			"toleranceClass": "N7",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": -14,
+			"lowerTolerance": -66,
+			"toleranceClass": "N7",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": -16,
+			"lowerTolerance": -73,
+			"toleranceClass": "N7",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": -16,
+			"lowerTolerance": -73,
+			"toleranceClass": "N7",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": -4,
+			"lowerTolerance": -29,
+			"toleranceClass": "N9",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -30,
+			"toleranceClass": "N9",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -36,
+			"toleranceClass": "N9",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -43,
+			"toleranceClass": "N9",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -52,
+			"toleranceClass": "N9",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -62,
+			"toleranceClass": "N9",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -74,
+			"toleranceClass": "N9",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -74,
+			"toleranceClass": "N9",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -87,
+			"toleranceClass": "N9",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -87,
+			"toleranceClass": "N9",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -100,
+			"toleranceClass": "N9",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -100,
+			"toleranceClass": "N9",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -100,
+			"toleranceClass": "N9",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -115,
+			"toleranceClass": "N9",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -115,
+			"toleranceClass": "N9",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -115,
+			"toleranceClass": "N9",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -130,
+			"toleranceClass": "N9",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -130,
+			"toleranceClass": "N9",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -140,
+			"toleranceClass": "N9",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -140,
+			"toleranceClass": "N9",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": -6,
+			"lowerTolerance": -16,
+			"toleranceClass": "P7",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": -8,
+			"lowerTolerance": -20,
+			"toleranceClass": "P7",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": -9,
+			"lowerTolerance": -24,
+			"toleranceClass": "P7",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": -11,
+			"lowerTolerance": -29,
+			"toleranceClass": "P7",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": -14,
+			"lowerTolerance": -35,
+			"toleranceClass": "P7",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": -17,
+			"lowerTolerance": -42,
+			"toleranceClass": "P7",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": -21,
+			"lowerTolerance": -51,
+			"toleranceClass": "P7",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": -21,
+			"lowerTolerance": -51,
+			"toleranceClass": "P7",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": -24,
+			"lowerTolerance": -59,
+			"toleranceClass": "P7",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": -24,
+			"lowerTolerance": -59,
+			"toleranceClass": "P7",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": -28,
+			"lowerTolerance": -68,
+			"toleranceClass": "P7",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": -28,
+			"lowerTolerance": -68,
+			"toleranceClass": "P7",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": -28,
+			"lowerTolerance": -68,
+			"toleranceClass": "P7",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": -33,
+			"lowerTolerance": -79,
+			"toleranceClass": "P7",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": -33,
+			"lowerTolerance": -79,
+			"toleranceClass": "P7",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": -33,
+			"lowerTolerance": -79,
+			"toleranceClass": "P7",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": -36,
+			"lowerTolerance": -88,
+			"toleranceClass": "P7",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": -36,
+			"lowerTolerance": -88,
+			"toleranceClass": "P7",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": -41,
+			"lowerTolerance": -98,
+			"toleranceClass": "P7",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": -41,
+			"lowerTolerance": -98,
+			"toleranceClass": "P7",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": -6,
+			"lowerTolerance": -31,
+			"toleranceClass": "P9",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": -12,
+			"lowerTolerance": -42,
+			"toleranceClass": "P9",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": -15,
+			"lowerTolerance": -51,
+			"toleranceClass": "P9",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": -18,
+			"lowerTolerance": -61,
+			"toleranceClass": "P9",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": -22,
+			"lowerTolerance": -74,
+			"toleranceClass": "P9",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": -26,
+			"lowerTolerance": -88,
+			"toleranceClass": "P9",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": -32,
+			"lowerTolerance": -106,
+			"toleranceClass": "P9",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": -32,
+			"lowerTolerance": -106,
+			"toleranceClass": "P9",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": -37,
+			"lowerTolerance": -124,
+			"toleranceClass": "P9",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": -37,
+			"lowerTolerance": -124,
+			"toleranceClass": "P9",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": -43,
+			"lowerTolerance": -143,
+			"toleranceClass": "P9",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": -43,
+			"lowerTolerance": -143,
+			"toleranceClass": "P9",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": -43,
+			"lowerTolerance": -143,
+			"toleranceClass": "P9",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": -50,
+			"lowerTolerance": -165,
+			"toleranceClass": "P9",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": -50,
+			"lowerTolerance": -165,
+			"toleranceClass": "P9",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": -50,
+			"lowerTolerance": -165,
+			"toleranceClass": "P9",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": -56,
+			"lowerTolerance": -186,
+			"toleranceClass": "P9",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": -56,
+			"lowerTolerance": -186,
+			"toleranceClass": "P9",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": -62,
+			"lowerTolerance": -202,
+			"toleranceClass": "P9",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": -62,
+			"lowerTolerance": -202,
+			"toleranceClass": "P9",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": -20,
+			"lowerTolerance": -45,
+			"toleranceClass": "d9",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": -30,
+			"lowerTolerance": -60,
+			"toleranceClass": "d9",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": -40,
+			"lowerTolerance": -76,
+			"toleranceClass": "d9",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": -50,
+			"lowerTolerance": -93,
+			"toleranceClass": "d9",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": -65,
+			"lowerTolerance": -117,
+			"toleranceClass": "d9",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": -80,
+			"lowerTolerance": -142,
+			"toleranceClass": "d9",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": -100,
+			"lowerTolerance": -174,
+			"toleranceClass": "d9",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": -100,
+			"lowerTolerance": -174,
+			"toleranceClass": "d9",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": -120,
+			"lowerTolerance": -207,
+			"toleranceClass": "d9",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": -120,
+			"lowerTolerance": -207,
+			"toleranceClass": "d9",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": -145,
+			"lowerTolerance": -245,
+			"toleranceClass": "d9",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": -145,
+			"lowerTolerance": -245,
+			"toleranceClass": "d9",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": -145,
+			"lowerTolerance": -245,
+			"toleranceClass": "d9",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": -170,
+			"lowerTolerance": -285,
+			"toleranceClass": "d9",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": -170,
+			"lowerTolerance": -285,
+			"toleranceClass": "d9",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": -170,
+			"lowerTolerance": -285,
+			"toleranceClass": "d9",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": -190,
+			"lowerTolerance": -320,
+			"toleranceClass": "d9",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": -190,
+			"lowerTolerance": -320,
+			"toleranceClass": "d9",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": -210,
+			"lowerTolerance": -350,
+			"toleranceClass": "d9",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": -210,
+			"lowerTolerance": -350,
+			"toleranceClass": "d9",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": -14,
+			"lowerTolerance": -28,
+			"toleranceClass": "e8",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": -20,
+			"lowerTolerance": -38,
+			"toleranceClass": "e8",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": -25,
+			"lowerTolerance": -47,
+			"toleranceClass": "e8",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": -32,
+			"lowerTolerance": -59,
+			"toleranceClass": "e8",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": -40,
+			"lowerTolerance": -73,
+			"toleranceClass": "e8",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": -50,
+			"lowerTolerance": -89,
+			"toleranceClass": "e8",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": -60,
+			"lowerTolerance": -106,
+			"toleranceClass": "e8",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": -60,
+			"lowerTolerance": -106,
+			"toleranceClass": "e8",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": -72,
+			"lowerTolerance": -126,
+			"toleranceClass": "e8",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": -72,
+			"lowerTolerance": -126,
+			"toleranceClass": "e8",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": -85,
+			"lowerTolerance": -148,
+			"toleranceClass": "e8",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": -85,
+			"lowerTolerance": -148,
+			"toleranceClass": "e8",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": -85,
+			"lowerTolerance": -148,
+			"toleranceClass": "e8",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": -100,
+			"lowerTolerance": -172,
+			"toleranceClass": "e8",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": -100,
+			"lowerTolerance": -172,
+			"toleranceClass": "e8",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": -100,
+			"lowerTolerance": -172,
+			"toleranceClass": "e8",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": -110,
+			"lowerTolerance": -191,
+			"toleranceClass": "e8",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": -110,
+			"lowerTolerance": -191,
+			"toleranceClass": "e8",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": -125,
+			"lowerTolerance": -214,
+			"toleranceClass": "e8",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": -125,
+			"lowerTolerance": -214,
+			"toleranceClass": "e8",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": -6,
+			"lowerTolerance": -16,
+			"toleranceClass": "f7",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": -10,
+			"lowerTolerance": -22,
+			"toleranceClass": "f7",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": -13,
+			"lowerTolerance": -28,
+			"toleranceClass": "f7",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": -16,
+			"lowerTolerance": -34,
+			"toleranceClass": "f7",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": -20,
+			"lowerTolerance": -41,
+			"toleranceClass": "f7",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": -25,
+			"lowerTolerance": -50,
+			"toleranceClass": "f7",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": -30,
+			"lowerTolerance": -60,
+			"toleranceClass": "f7",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": -30,
+			"lowerTolerance": -60,
+			"toleranceClass": "f7",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": -36,
+			"lowerTolerance": -71,
+			"toleranceClass": "f7",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": -36,
+			"lowerTolerance": -71,
+			"toleranceClass": "f7",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": -43,
+			"lowerTolerance": -83,
+			"toleranceClass": "f7",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": -43,
+			"lowerTolerance": -83,
+			"toleranceClass": "f7",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": -43,
+			"lowerTolerance": -83,
+			"toleranceClass": "f7",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": -50,
+			"lowerTolerance": -96,
+			"toleranceClass": "f7",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": -50,
+			"lowerTolerance": -96,
+			"toleranceClass": "f7",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": -50,
+			"lowerTolerance": -96,
+			"toleranceClass": "f7",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": -56,
+			"lowerTolerance": -108,
+			"toleranceClass": "f7",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": -56,
+			"lowerTolerance": -108,
+			"toleranceClass": "f7",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": -62,
+			"lowerTolerance": -119,
+			"toleranceClass": "f7",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": -62,
+			"lowerTolerance": -119,
+			"toleranceClass": "f7",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": -2,
+			"lowerTolerance": -8,
+			"toleranceClass": "g6",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": -4,
+			"lowerTolerance": -12,
+			"toleranceClass": "g6",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": -5,
+			"lowerTolerance": -14,
+			"toleranceClass": "g6",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": -6,
+			"lowerTolerance": -17,
+			"toleranceClass": "g6",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": -7,
+			"lowerTolerance": -20,
+			"toleranceClass": "g6",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": -9,
+			"lowerTolerance": -25,
+			"toleranceClass": "g6",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": -10,
+			"lowerTolerance": -29,
+			"toleranceClass": "g6",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": -10,
+			"lowerTolerance": -29,
+			"toleranceClass": "g6",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": -12,
+			"lowerTolerance": -34,
+			"toleranceClass": "g6",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": -12,
+			"lowerTolerance": -34,
+			"toleranceClass": "g6",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": -14,
+			"lowerTolerance": -39,
+			"toleranceClass": "g6",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": -14,
+			"lowerTolerance": -39,
+			"toleranceClass": "g6",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": -14,
+			"lowerTolerance": -39,
+			"toleranceClass": "g6",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": -15,
+			"lowerTolerance": -44,
+			"toleranceClass": "g6",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": -15,
+			"lowerTolerance": -44,
+			"toleranceClass": "g6",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": -15,
+			"lowerTolerance": -44,
+			"toleranceClass": "g6",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": -17,
+			"lowerTolerance": -49,
+			"toleranceClass": "g6",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": -17,
+			"lowerTolerance": -49,
+			"toleranceClass": "g6",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": -18,
+			"lowerTolerance": -54,
+			"toleranceClass": "g6",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": -18,
+			"lowerTolerance": -54,
+			"toleranceClass": "g6",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -4,
+			"toleranceClass": "h5",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -5,
+			"toleranceClass": "h5",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -6,
+			"toleranceClass": "h5",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -8,
+			"toleranceClass": "h5",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -9,
+			"toleranceClass": "h5",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -11,
+			"toleranceClass": "h5",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -13,
+			"toleranceClass": "h5",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -13,
+			"toleranceClass": "h5",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -15,
+			"toleranceClass": "h5",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -15,
+			"toleranceClass": "h5",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -18,
+			"toleranceClass": "h5",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -18,
+			"toleranceClass": "h5",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -18,
+			"toleranceClass": "h5",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -20,
+			"toleranceClass": "h5",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -20,
+			"toleranceClass": "h5",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -20,
+			"toleranceClass": "h5",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -23,
+			"toleranceClass": "h5",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -23,
+			"toleranceClass": "h5",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -25,
+			"toleranceClass": "h5",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -25,
+			"toleranceClass": "h5",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -6,
+			"toleranceClass": "h6",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -8,
+			"toleranceClass": "h6",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -9,
+			"toleranceClass": "h6",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -11,
+			"toleranceClass": "h6",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -13,
+			"toleranceClass": "h6",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -16,
+			"toleranceClass": "h6",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -19,
+			"toleranceClass": "h6",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -19,
+			"toleranceClass": "h6",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -22,
+			"toleranceClass": "h6",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -22,
+			"toleranceClass": "h6",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -25,
+			"toleranceClass": "h6",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -25,
+			"toleranceClass": "h6",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -25,
+			"toleranceClass": "h6",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -29,
+			"toleranceClass": "h6",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -29,
+			"toleranceClass": "h6",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -29,
+			"toleranceClass": "h6",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -32,
+			"toleranceClass": "h6",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -32,
+			"toleranceClass": "h6",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -36,
+			"toleranceClass": "h6",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -36,
+			"toleranceClass": "h6",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -10,
+			"toleranceClass": "h7",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -12,
+			"toleranceClass": "h7",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -15,
+			"toleranceClass": "h7",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -18,
+			"toleranceClass": "h7",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -21,
+			"toleranceClass": "h7",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -25,
+			"toleranceClass": "h7",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -30,
+			"toleranceClass": "h7",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -30,
+			"toleranceClass": "h7",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -35,
+			"toleranceClass": "h7",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -35,
+			"toleranceClass": "h7",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -40,
+			"toleranceClass": "h7",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -40,
+			"toleranceClass": "h7",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -40,
+			"toleranceClass": "h7",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -46,
+			"toleranceClass": "h7",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -46,
+			"toleranceClass": "h7",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -46,
+			"toleranceClass": "h7",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -52,
+			"toleranceClass": "h7",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -52,
+			"toleranceClass": "h7",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -57,
+			"toleranceClass": "h7",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -57,
+			"toleranceClass": "h7",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -14,
+			"toleranceClass": "h8",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -18,
+			"toleranceClass": "h8",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -22,
+			"toleranceClass": "h8",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -27,
+			"toleranceClass": "h8",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -33,
+			"toleranceClass": "h8",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -39,
+			"toleranceClass": "h8",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -46,
+			"toleranceClass": "h8",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -46,
+			"toleranceClass": "h8",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -54,
+			"toleranceClass": "h8",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -54,
+			"toleranceClass": "h8",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -63,
+			"toleranceClass": "h8",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -63,
+			"toleranceClass": "h8",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -63,
+			"toleranceClass": "h8",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -72,
+			"toleranceClass": "h8",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -72,
+			"toleranceClass": "h8",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -72,
+			"toleranceClass": "h8",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -81,
+			"toleranceClass": "h8",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -81,
+			"toleranceClass": "h8",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -89,
+			"toleranceClass": "h8",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -89,
+			"toleranceClass": "h8",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -25,
+			"toleranceClass": "h9",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -30,
+			"toleranceClass": "h9",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -36,
+			"toleranceClass": "h9",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -43,
+			"toleranceClass": "h9",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -52,
+			"toleranceClass": "h9",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -62,
+			"toleranceClass": "h9",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -74,
+			"toleranceClass": "h9",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -74,
+			"toleranceClass": "h9",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -87,
+			"toleranceClass": "h9",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -87,
+			"toleranceClass": "h9",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -100,
+			"toleranceClass": "h9",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -100,
+			"toleranceClass": "h9",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -100,
+			"toleranceClass": "h9",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -115,
+			"toleranceClass": "h9",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -115,
+			"toleranceClass": "h9",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -115,
+			"toleranceClass": "h9",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -130,
+			"toleranceClass": "h9",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -130,
+			"toleranceClass": "h9",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -140,
+			"toleranceClass": "h9",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -140,
+			"toleranceClass": "h9",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -60,
+			"toleranceClass": "h11",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -75,
+			"toleranceClass": "h11",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -90,
+			"toleranceClass": "h11",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -110,
+			"toleranceClass": "h11",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -130,
+			"toleranceClass": "h11",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -160,
+			"toleranceClass": "h11",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -190,
+			"toleranceClass": "h11",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -190,
+			"toleranceClass": "h11",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -220,
+			"toleranceClass": "h11",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -220,
+			"toleranceClass": "h11",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -250,
+			"toleranceClass": "h11",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -250,
+			"toleranceClass": "h11",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -250,
+			"toleranceClass": "h11",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -290,
+			"toleranceClass": "h11",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -290,
+			"toleranceClass": "h11",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -290,
+			"toleranceClass": "h11",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -320,
+			"toleranceClass": "h11",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -320,
+			"toleranceClass": "h11",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -360,
+			"toleranceClass": "h11",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 0,
+			"lowerTolerance": -360,
+			"toleranceClass": "h11",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 2,
+			"lowerTolerance": -2,
+			"toleranceClass": "js5",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 2.5,
+			"lowerTolerance": -2.5,
+			"toleranceClass": "js5",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 3,
+			"lowerTolerance": -3,
+			"toleranceClass": "js5",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 4,
+			"lowerTolerance": -4,
+			"toleranceClass": "js5",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 4.5,
+			"lowerTolerance": -4.5,
+			"toleranceClass": "js5",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 5.5,
+			"lowerTolerance": -5.5,
+			"toleranceClass": "js5",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 6.5,
+			"lowerTolerance": -6.5,
+			"toleranceClass": "js5",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 6.5,
+			"lowerTolerance": -6.5,
+			"toleranceClass": "js5",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 7.5,
+			"lowerTolerance": -7.5,
+			"toleranceClass": "js5",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 7.5,
+			"lowerTolerance": -7.5,
+			"toleranceClass": "js5",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 9,
+			"lowerTolerance": -9,
+			"toleranceClass": "js5",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 9,
+			"lowerTolerance": -9,
+			"toleranceClass": "js5",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 9,
+			"lowerTolerance": -9,
+			"toleranceClass": "js5",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 10,
+			"lowerTolerance": -10,
+			"toleranceClass": "js5",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 10,
+			"lowerTolerance": -10,
+			"toleranceClass": "js5",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 10,
+			"lowerTolerance": -10,
+			"toleranceClass": "js5",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 11.5,
+			"lowerTolerance": -11.5,
+			"toleranceClass": "js5",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 11.5,
+			"lowerTolerance": -11.5,
+			"toleranceClass": "js5",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 12.5,
+			"lowerTolerance": -12.5,
+			"toleranceClass": "js5",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 12.5,
+			"lowerTolerance": -12.5,
+			"toleranceClass": "js5",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 3,
+			"lowerTolerance": -3,
+			"toleranceClass": "js6",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 4,
+			"lowerTolerance": -4,
+			"toleranceClass": "js6",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 4.5,
+			"lowerTolerance": -4.5,
+			"toleranceClass": "js6",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 5.5,
+			"lowerTolerance": -5.5,
+			"toleranceClass": "js6",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 6.5,
+			"lowerTolerance": -6.5,
+			"toleranceClass": "js6",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 8,
+			"lowerTolerance": -8,
+			"toleranceClass": "js6",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 9.5,
+			"lowerTolerance": -9.5,
+			"toleranceClass": "js6",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 9.5,
+			"lowerTolerance": -9.5,
+			"toleranceClass": "js6",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 11,
+			"lowerTolerance": -11,
+			"toleranceClass": "js6",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 11,
+			"lowerTolerance": -11,
+			"toleranceClass": "js6",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 12.5,
+			"lowerTolerance": -12.5,
+			"toleranceClass": "js6",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 12.5,
+			"lowerTolerance": -12.5,
+			"toleranceClass": "js6",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 12.5,
+			"lowerTolerance": -12.5,
+			"toleranceClass": "js6",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 14.5,
+			"lowerTolerance": -14.5,
+			"toleranceClass": "js6",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 14.5,
+			"lowerTolerance": -14.5,
+			"toleranceClass": "js6",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 14.5,
+			"lowerTolerance": -14.5,
+			"toleranceClass": "js6",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 16,
+			"lowerTolerance": -16,
+			"toleranceClass": "js6",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 16,
+			"lowerTolerance": -16,
+			"toleranceClass": "js6",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 18,
+			"lowerTolerance": -18,
+			"toleranceClass": "js6",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 18,
+			"lowerTolerance": -18,
+			"toleranceClass": "js6",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 70,
+			"lowerTolerance": -70,
+			"toleranceClass": "js13",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 90,
+			"lowerTolerance": -90,
+			"toleranceClass": "js13",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 110,
+			"lowerTolerance": -110,
+			"toleranceClass": "js13",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 135,
+			"lowerTolerance": -135,
+			"toleranceClass": "js13",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 165,
+			"lowerTolerance": -165,
+			"toleranceClass": "js13",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 195,
+			"lowerTolerance": -195,
+			"toleranceClass": "js13",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 230,
+			"lowerTolerance": -230,
+			"toleranceClass": "js13",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 230,
+			"lowerTolerance": -230,
+			"toleranceClass": "js13",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 270,
+			"lowerTolerance": -270,
+			"toleranceClass": "js13",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 270,
+			"lowerTolerance": -270,
+			"toleranceClass": "js13",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 315,
+			"lowerTolerance": -315,
+			"toleranceClass": "js13",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 315,
+			"lowerTolerance": -315,
+			"toleranceClass": "js13",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 315,
+			"lowerTolerance": -315,
+			"toleranceClass": "js13",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 360,
+			"lowerTolerance": -360,
+			"toleranceClass": "js13",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 360,
+			"lowerTolerance": -360,
+			"toleranceClass": "js13",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 360,
+			"lowerTolerance": -360,
+			"toleranceClass": "js13",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 405,
+			"lowerTolerance": -405,
+			"toleranceClass": "js13",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 405,
+			"lowerTolerance": -405,
+			"toleranceClass": "js13",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 445,
+			"lowerTolerance": -445,
+			"toleranceClass": "js13",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 445,
+			"lowerTolerance": -445,
+			"toleranceClass": "js13",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 125,
+			"lowerTolerance": -125,
+			"toleranceClass": "js14",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 150,
+			"lowerTolerance": -150,
+			"toleranceClass": "js14",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 180,
+			"lowerTolerance": -180,
+			"toleranceClass": "js14",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 215,
+			"lowerTolerance": -215,
+			"toleranceClass": "js14",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 260,
+			"lowerTolerance": -260,
+			"toleranceClass": "js14",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 310,
+			"lowerTolerance": -310,
+			"toleranceClass": "js14",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 370,
+			"lowerTolerance": -370,
+			"toleranceClass": "js14",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 370,
+			"lowerTolerance": -370,
+			"toleranceClass": "js14",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 435,
+			"lowerTolerance": -435,
+			"toleranceClass": "js14",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 435,
+			"lowerTolerance": -435,
+			"toleranceClass": "js14",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 500,
+			"lowerTolerance": -500,
+			"toleranceClass": "js14",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 500,
+			"lowerTolerance": -500,
+			"toleranceClass": "js14",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 500,
+			"lowerTolerance": -500,
+			"toleranceClass": "js14",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 575,
+			"lowerTolerance": -575,
+			"toleranceClass": "js14",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 575,
+			"lowerTolerance": -575,
+			"toleranceClass": "js14",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 575,
+			"lowerTolerance": -575,
+			"toleranceClass": "js14",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 650,
+			"lowerTolerance": -650,
+			"toleranceClass": "js14",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 650,
+			"lowerTolerance": -650,
+			"toleranceClass": "js14",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 700,
+			"lowerTolerance": -700,
+			"toleranceClass": "js14",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 700,
+			"lowerTolerance": -700,
+			"toleranceClass": "js14",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 4,
+			"lowerTolerance": 0,
+			"toleranceClass": "k5",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 6,
+			"lowerTolerance": 1,
+			"toleranceClass": "k5",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 7,
+			"lowerTolerance": 1,
+			"toleranceClass": "k5",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 9,
+			"lowerTolerance": 1,
+			"toleranceClass": "k5",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 11,
+			"lowerTolerance": 2,
+			"toleranceClass": "k5",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 13,
+			"lowerTolerance": 2,
+			"toleranceClass": "k5",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 15,
+			"lowerTolerance": 2,
+			"toleranceClass": "k5",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 15,
+			"lowerTolerance": 2,
+			"toleranceClass": "k5",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 18,
+			"lowerTolerance": 3,
+			"toleranceClass": "k5",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 18,
+			"lowerTolerance": 3,
+			"toleranceClass": "k5",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 21,
+			"lowerTolerance": 3,
+			"toleranceClass": "k5",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 21,
+			"lowerTolerance": 3,
+			"toleranceClass": "k5",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 21,
+			"lowerTolerance": 3,
+			"toleranceClass": "k5",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 24,
+			"lowerTolerance": 4,
+			"toleranceClass": "k5",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 24,
+			"lowerTolerance": 4,
+			"toleranceClass": "k5",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 24,
+			"lowerTolerance": 4,
+			"toleranceClass": "k5",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 27,
+			"lowerTolerance": 4,
+			"toleranceClass": "k5",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 27,
+			"lowerTolerance": 4,
+			"toleranceClass": "k5",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 29,
+			"lowerTolerance": 4,
+			"toleranceClass": "k5",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 29,
+			"lowerTolerance": 4,
+			"toleranceClass": "k5",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 6,
+			"lowerTolerance": 0,
+			"toleranceClass": "k6",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 9,
+			"lowerTolerance": 1,
+			"toleranceClass": "k6",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 10,
+			"lowerTolerance": 1,
+			"toleranceClass": "k6",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 12,
+			"lowerTolerance": 1,
+			"toleranceClass": "k6",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 15,
+			"lowerTolerance": 2,
+			"toleranceClass": "k6",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 18,
+			"lowerTolerance": 2,
+			"toleranceClass": "k6",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 21,
+			"lowerTolerance": 2,
+			"toleranceClass": "k6",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 21,
+			"lowerTolerance": 2,
+			"toleranceClass": "k6",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 25,
+			"lowerTolerance": 3,
+			"toleranceClass": "k6",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 25,
+			"lowerTolerance": 3,
+			"toleranceClass": "k6",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 28,
+			"lowerTolerance": 3,
+			"toleranceClass": "k6",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 28,
+			"lowerTolerance": 3,
+			"toleranceClass": "k6",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 28,
+			"lowerTolerance": 3,
+			"toleranceClass": "k6",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 33,
+			"lowerTolerance": 4,
+			"toleranceClass": "k6",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 33,
+			"lowerTolerance": 4,
+			"toleranceClass": "k6",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 33,
+			"lowerTolerance": 4,
+			"toleranceClass": "k6",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 36,
+			"lowerTolerance": 4,
+			"toleranceClass": "k6",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 36,
+			"lowerTolerance": 4,
+			"toleranceClass": "k6",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 40,
+			"lowerTolerance": 4,
+			"toleranceClass": "k6",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 40,
+			"lowerTolerance": 4,
+			"toleranceClass": "k6",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 6,
+			"lowerTolerance": 2,
+			"toleranceClass": "m5",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 9,
+			"lowerTolerance": 4,
+			"toleranceClass": "m5",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 12,
+			"lowerTolerance": 6,
+			"toleranceClass": "m5",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 15,
+			"lowerTolerance": 7,
+			"toleranceClass": "m5",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 17,
+			"lowerTolerance": 8,
+			"toleranceClass": "m5",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 20,
+			"lowerTolerance": 9,
+			"toleranceClass": "m5",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 24,
+			"lowerTolerance": 11,
+			"toleranceClass": "m5",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 24,
+			"lowerTolerance": 11,
+			"toleranceClass": "m5",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 28,
+			"lowerTolerance": 13,
+			"toleranceClass": "m5",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 28,
+			"lowerTolerance": 13,
+			"toleranceClass": "m5",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 33,
+			"lowerTolerance": 15,
+			"toleranceClass": "m5",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 33,
+			"lowerTolerance": 15,
+			"toleranceClass": "m5",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 33,
+			"lowerTolerance": 15,
+			"toleranceClass": "m5",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 37,
+			"lowerTolerance": 17,
+			"toleranceClass": "m5",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 37,
+			"lowerTolerance": 17,
+			"toleranceClass": "m5",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 37,
+			"lowerTolerance": 17,
+			"toleranceClass": "m5",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 43,
+			"lowerTolerance": 20,
+			"toleranceClass": "m5",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 43,
+			"lowerTolerance": 20,
+			"toleranceClass": "m5",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 46,
+			"lowerTolerance": 21,
+			"toleranceClass": "m5",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 46,
+			"lowerTolerance": 21,
+			"toleranceClass": "m5",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 8,
+			"lowerTolerance": 2,
+			"toleranceClass": "m6",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 12,
+			"lowerTolerance": 4,
+			"toleranceClass": "m6",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 15,
+			"lowerTolerance": 6,
+			"toleranceClass": "m6",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 18,
+			"lowerTolerance": 7,
+			"toleranceClass": "m6",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 21,
+			"lowerTolerance": 8,
+			"toleranceClass": "m6",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 25,
+			"lowerTolerance": 9,
+			"toleranceClass": "m6",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 30,
+			"lowerTolerance": 11,
+			"toleranceClass": "m6",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 30,
+			"lowerTolerance": 11,
+			"toleranceClass": "m6",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 35,
+			"lowerTolerance": 13,
+			"toleranceClass": "m6",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 35,
+			"lowerTolerance": 13,
+			"toleranceClass": "m6",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 40,
+			"lowerTolerance": 15,
+			"toleranceClass": "m6",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 40,
+			"lowerTolerance": 15,
+			"toleranceClass": "m6",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 40,
+			"lowerTolerance": 15,
+			"toleranceClass": "m6",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 46,
+			"lowerTolerance": 17,
+			"toleranceClass": "m6",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 46,
+			"lowerTolerance": 17,
+			"toleranceClass": "m6",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 46,
+			"lowerTolerance": 17,
+			"toleranceClass": "m6",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 52,
+			"lowerTolerance": 20,
+			"toleranceClass": "m6",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 52,
+			"lowerTolerance": 20,
+			"toleranceClass": "m6",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 57,
+			"lowerTolerance": 21,
+			"toleranceClass": "m6",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 57,
+			"lowerTolerance": 21,
+			"toleranceClass": "m6",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 8,
+			"lowerTolerance": 4,
+			"toleranceClass": "n5",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 13,
+			"lowerTolerance": 8,
+			"toleranceClass": "n5",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 16,
+			"lowerTolerance": 10,
+			"toleranceClass": "n5",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 20,
+			"lowerTolerance": 12,
+			"toleranceClass": "n5",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 24,
+			"lowerTolerance": 15,
+			"toleranceClass": "n5",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 28,
+			"lowerTolerance": 17,
+			"toleranceClass": "n5",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 33,
+			"lowerTolerance": 20,
+			"toleranceClass": "n5",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 33,
+			"lowerTolerance": 20,
+			"toleranceClass": "n5",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 38,
+			"lowerTolerance": 23,
+			"toleranceClass": "n5",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 38,
+			"lowerTolerance": 23,
+			"toleranceClass": "n5",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 45,
+			"lowerTolerance": 27,
+			"toleranceClass": "n5",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 45,
+			"lowerTolerance": 27,
+			"toleranceClass": "n5",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 45,
+			"lowerTolerance": 27,
+			"toleranceClass": "n5",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 51,
+			"lowerTolerance": 31,
+			"toleranceClass": "n5",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 51,
+			"lowerTolerance": 31,
+			"toleranceClass": "n5",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 51,
+			"lowerTolerance": 31,
+			"toleranceClass": "n5",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 57,
+			"lowerTolerance": 34,
+			"toleranceClass": "n5",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 57,
+			"lowerTolerance": 34,
+			"toleranceClass": "n5",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 62,
+			"lowerTolerance": 37,
+			"toleranceClass": "n5",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 62,
+			"lowerTolerance": 37,
+			"toleranceClass": "n5",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 10,
+			"lowerTolerance": 4,
+			"toleranceClass": "n6",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 16,
+			"lowerTolerance": 8,
+			"toleranceClass": "n6",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 19,
+			"lowerTolerance": 10,
+			"toleranceClass": "n6",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 23,
+			"lowerTolerance": 12,
+			"toleranceClass": "n6",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 28,
+			"lowerTolerance": 15,
+			"toleranceClass": "n6",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 33,
+			"lowerTolerance": 17,
+			"toleranceClass": "n6",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 39,
+			"lowerTolerance": 20,
+			"toleranceClass": "n6",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 39,
+			"lowerTolerance": 20,
+			"toleranceClass": "n6",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 45,
+			"lowerTolerance": 23,
+			"toleranceClass": "n6",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 45,
+			"lowerTolerance": 23,
+			"toleranceClass": "n6",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 52,
+			"lowerTolerance": 27,
+			"toleranceClass": "n6",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 52,
+			"lowerTolerance": 27,
+			"toleranceClass": "n6",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 52,
+			"lowerTolerance": 27,
+			"toleranceClass": "n6",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 60,
+			"lowerTolerance": 31,
+			"toleranceClass": "n6",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 60,
+			"lowerTolerance": 31,
+			"toleranceClass": "n6",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 60,
+			"lowerTolerance": 31,
+			"toleranceClass": "n6",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 66,
+			"lowerTolerance": 34,
+			"toleranceClass": "n6",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 66,
+			"lowerTolerance": 34,
+			"toleranceClass": "n6",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 73,
+			"lowerTolerance": 37,
+			"toleranceClass": "n6",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 73,
+			"lowerTolerance": 37,
+			"toleranceClass": "n6",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 12,
+			"lowerTolerance": 6,
+			"toleranceClass": "p6",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 20,
+			"lowerTolerance": 12,
+			"toleranceClass": "p6",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 24,
+			"lowerTolerance": 15,
+			"toleranceClass": "p6",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 29,
+			"lowerTolerance": 18,
+			"toleranceClass": "p6",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 35,
+			"lowerTolerance": 22,
+			"toleranceClass": "p6",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 42,
+			"lowerTolerance": 26,
+			"toleranceClass": "p6",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 51,
+			"lowerTolerance": 32,
+			"toleranceClass": "p6",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 51,
+			"lowerTolerance": 32,
+			"toleranceClass": "p6",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 59,
+			"lowerTolerance": 37,
+			"toleranceClass": "p6",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 59,
+			"lowerTolerance": 37,
+			"toleranceClass": "p6",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 68,
+			"lowerTolerance": 43,
+			"toleranceClass": "p6",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 68,
+			"lowerTolerance": 43,
+			"toleranceClass": "p6",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 68,
+			"lowerTolerance": 43,
+			"toleranceClass": "p6",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 79,
+			"lowerTolerance": 50,
+			"toleranceClass": "p6",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 79,
+			"lowerTolerance": 50,
+			"toleranceClass": "p6",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 79,
+			"lowerTolerance": 50,
+			"toleranceClass": "p6",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 88,
+			"lowerTolerance": 56,
+			"toleranceClass": "p6",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 88,
+			"lowerTolerance": 56,
+			"toleranceClass": "p6",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 98,
+			"lowerTolerance": 62,
+			"toleranceClass": "p6",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 98,
+			"lowerTolerance": 62,
+			"toleranceClass": "p6",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 16,
+			"lowerTolerance": 10,
+			"toleranceClass": "r6",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 23,
+			"lowerTolerance": 15,
+			"toleranceClass": "r6",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 28,
+			"lowerTolerance": 19,
+			"toleranceClass": "r6",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 34,
+			"lowerTolerance": 23,
+			"toleranceClass": "r6",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 41,
+			"lowerTolerance": 28,
+			"toleranceClass": "r6",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 50,
+			"lowerTolerance": 34,
+			"toleranceClass": "r6",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 60,
+			"lowerTolerance": 41,
+			"toleranceClass": "r6",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 62,
+			"lowerTolerance": 43,
+			"toleranceClass": "r6",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 73,
+			"lowerTolerance": 51,
+			"toleranceClass": "r6",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 76,
+			"lowerTolerance": 54,
+			"toleranceClass": "r6",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 88,
+			"lowerTolerance": 63,
+			"toleranceClass": "r6",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 90,
+			"lowerTolerance": 65,
+			"toleranceClass": "r6",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 93,
+			"lowerTolerance": 68,
+			"toleranceClass": "r6",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 106,
+			"lowerTolerance": 77,
+			"toleranceClass": "r6",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 109,
+			"lowerTolerance": 80,
+			"toleranceClass": "r6",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 113,
+			"lowerTolerance": 84,
+			"toleranceClass": "r6",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 126,
+			"lowerTolerance": 94,
+			"toleranceClass": "r6",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 130,
+			"lowerTolerance": 98,
+			"toleranceClass": "r6",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 144,
+			"lowerTolerance": 108,
+			"toleranceClass": "r6",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 150,
+			"lowerTolerance": 114,
+			"toleranceClass": "r6",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 20,
+			"lowerTolerance": 14,
+			"toleranceClass": "s6",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 27,
+			"lowerTolerance": 19,
+			"toleranceClass": "s6",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 32,
+			"lowerTolerance": 23,
+			"toleranceClass": "s6",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 39,
+			"lowerTolerance": 28,
+			"toleranceClass": "s6",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 48,
+			"lowerTolerance": 35,
+			"toleranceClass": "s6",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 59,
+			"lowerTolerance": 43,
+			"toleranceClass": "s6",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 72,
+			"lowerTolerance": 53,
+			"toleranceClass": "s6",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 78,
+			"lowerTolerance": 59,
+			"toleranceClass": "s6",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 93,
+			"lowerTolerance": 71,
+			"toleranceClass": "s6",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 101,
+			"lowerTolerance": 79,
+			"toleranceClass": "s6",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 117,
+			"lowerTolerance": 92,
+			"toleranceClass": "s6",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 125,
+			"lowerTolerance": 100,
+			"toleranceClass": "s6",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 133,
+			"lowerTolerance": 108,
+			"toleranceClass": "s6",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 151,
+			"lowerTolerance": 122,
+			"toleranceClass": "s6",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 159,
+			"lowerTolerance": 130,
+			"toleranceClass": "s6",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 169,
+			"lowerTolerance": 140,
+			"toleranceClass": "s6",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 190,
+			"lowerTolerance": 158,
+			"toleranceClass": "s6",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 202,
+			"lowerTolerance": 170,
+			"toleranceClass": "s6",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 226,
+			"lowerTolerance": 190,
+			"toleranceClass": "s6",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 244,
+			"lowerTolerance": 208,
+			"toleranceClass": "s6",
+			"nominalMax": 400,
+			"nominalMin": 355
+			},
+			{
+			"upperTolerance": 24,
+			"lowerTolerance": 14,
+			"toleranceClass": "s7",
+			"nominalMax": 3,
+			"nominalMin": 0
+			},
+			{
+			"upperTolerance": 31,
+			"lowerTolerance": 19,
+			"toleranceClass": "s7",
+			"nominalMax": 6,
+			"nominalMin": 3
+			},
+			{
+			"upperTolerance": 38,
+			"lowerTolerance": 23,
+			"toleranceClass": "s7",
+			"nominalMax": 10,
+			"nominalMin": 6
+			},
+			{
+			"upperTolerance": 46,
+			"lowerTolerance": 28,
+			"toleranceClass": "s7",
+			"nominalMax": 18,
+			"nominalMin": 10
+			},
+			{
+			"upperTolerance": 56,
+			"lowerTolerance": 35,
+			"toleranceClass": "s7",
+			"nominalMax": 30,
+			"nominalMin": 18
+			},
+			{
+			"upperTolerance": 68,
+			"lowerTolerance": 43,
+			"toleranceClass": "s7",
+			"nominalMax": 50,
+			"nominalMin": 30
+			},
+			{
+			"upperTolerance": 83,
+			"lowerTolerance": 53,
+			"toleranceClass": "s7",
+			"nominalMax": 65,
+			"nominalMin": 50
+			},
+			{
+			"upperTolerance": 89,
+			"lowerTolerance": 59,
+			"toleranceClass": "s7",
+			"nominalMax": 80,
+			"nominalMin": 65
+			},
+			{
+			"upperTolerance": 106,
+			"lowerTolerance": 71,
+			"toleranceClass": "s7",
+			"nominalMax": 100,
+			"nominalMin": 80
+			},
+			{
+			"upperTolerance": 114,
+			"lowerTolerance": 79,
+			"toleranceClass": "s7",
+			"nominalMax": 120,
+			"nominalMin": 100
+			},
+			{
+			"upperTolerance": 132,
+			"lowerTolerance": 92,
+			"toleranceClass": "s7",
+			"nominalMax": 140,
+			"nominalMin": 120
+			},
+			{
+			"upperTolerance": 140,
+			"lowerTolerance": 100,
+			"toleranceClass": "s7",
+			"nominalMax": 160,
+			"nominalMin": 140
+			},
+			{
+			"upperTolerance": 148,
+			"lowerTolerance": 108,
+			"toleranceClass": "s7",
+			"nominalMax": 180,
+			"nominalMin": 160
+			},
+			{
+			"upperTolerance": 168,
+			"lowerTolerance": 122,
+			"toleranceClass": "s7",
+			"nominalMax": 200,
+			"nominalMin": 180
+			},
+			{
+			"upperTolerance": 176,
+			"lowerTolerance": 130,
+			"toleranceClass": "s7",
+			"nominalMax": 225,
+			"nominalMin": 200
+			},
+			{
+			"upperTolerance": 186,
+			"lowerTolerance": 140,
+			"toleranceClass": "s7",
+			"nominalMax": 250,
+			"nominalMin": 225
+			},
+			{
+			"upperTolerance": 210,
+			"lowerTolerance": 158,
+			"toleranceClass": "s7",
+			"nominalMax": 280,
+			"nominalMin": 250
+			},
+			{
+			"upperTolerance": 222,
+			"lowerTolerance": 170,
+			"toleranceClass": "s7",
+			"nominalMax": 315,
+			"nominalMin": 280
+			},
+			{
+			"upperTolerance": 247,
+			"lowerTolerance": 190,
+			"toleranceClass": "s7",
+			"nominalMax": 355,
+			"nominalMin": 315
+			},
+			{
+			"upperTolerance": 265,
+			"lowerTolerance": 208,
+			"toleranceClass": "s7",
+			"nominalMax": 400,
+			"nominalMin": 355
+			}
+		]
+	</script>
+
+	<script>
+		function calcAjust(nominal, toleranceClass) {
+			data = dataTolerance;
+			for (var i = 0; i < data.length; i++) {
+				if(data[i].toleranceClass == toleranceClass && nominal <= data[i].nominalMax && nominal > data[i].nominalMin){
+					const upper = data[i].upperTolerance * 0.001;
+					const lower = data[i].lowerTolerance * 0.001;
+					return ({
+						"coteMax" : nominal + upper,
+						"coteMin" : nominal + lower,
+						"coteMoyenne" : nominal + ((upper + lower) / 2)});
+				}
+			}
+			return (null);
+		}
+
+		function calcCoteMoyenne() {
+			var coteMoyenne = null;
+			var coteMin = null;
+			var coteMax = null;
+			
+			const coteType = document.querySelector("input[type='radio'][name='typeCoteVoulue']:checked").id;
+			switch (coteType){
+				case 'typeMoyenne':
+					coteMoyenne = parseFloat(document.getElementById("moyenne").value);
+					break;
+
+				case 'typeTolerancee':
+					var coteNominale = parseFloat(document.getElementById("nominaleTol").value);
+
+					const sup = parseFloat(document.getElementById("toleranceSup").value);
+					coteMax = coteNominale + sup;
+
+					const inf = parseFloat(document.getElementById("toleranceInf").value);
+					coteMin = coteNominale + inf;
+
+					coteMoyenne = coteNominale + ((sup + inf) / 2);
+					break;
+
+				case 'typeAjustee':
+					var coteNominale = parseFloat(document.getElementById("nominaleAju").value);
+					const toleranceClass = arbre.value || alesage.value
+					const ajus = calcAjust(coteNominale, toleranceClass);
+					
+					coteMin = ajus.coteMin;
+					coteMax = ajus.coteMax;
+					coteMoyenne = ajus.coteMoyenne;
+					break;
+			}
+			return ({
+				"coteMax" : coteMax,
+				"coteMin" : coteMin,
+				"coteMoyenne" : coteMoyenne});
+		}
+
+		function CalcCorDyn(coteMoyenne) {
+			const coteMesuree = parseFloat(document.getElementById("coteMesuree").value);
+
+			var corDyn = null;
+
+			const machine = document.querySelectorAll("input[type='radio'][name='machine']:checked")[0].id;
+			const position = document.querySelectorAll("input[type='radio'][name='position']:checked")[0].id;
+
+			if (machine == "tour") {
+				corDyn = coteMoyenne - coteMesuree;
+			} else if (machine == "fraiseuse") {
+				const deuxFaces = document.getElementById("2faces").checked;
+        		if (position == "exterieure" || position == "hauteur"){
+					corDyn = coteMoyenne - coteMesuree;
+				} else {
+					corDyn = (coteMoyenne - coteMesuree) * -1;
+				}
+				if (deuxFaces) {
+					if (position == "exterieure"){
+						corDyn = corDyn / 2;
+					} else {
+						corDyn = corDyn / 2;
+					}
+				}
+			}
+			return (corDyn);
+		}
+	</script>
+
+	<script>
+		var form = document.querySelector("form");
+		const arbre = document.getElementById("arbre");
+		const alesage = document.getElementById("alesage");
+		const tour = document.getElementById("tour");
+		const fraiseuse = document.getElementById("fraiseuse");
+		const positions = document.querySelectorAll("input[type='radio'][name='position']");
+
+		function changeText() {
+			const cotes = calcCoteMoyenne();
+			const corDyn = CalcCorDyn(cotes.coteMoyenne);
+
+			document.getElementById("moyenneText").innerHTML = Math.round(cotes.coteMoyenne * 1000)/1000 || "";
+			document.getElementById("maxText").innerHTML = Math.round(cotes.coteMax * 1000)/1000 || "";
+			document.getElementById("minText").innerHTML = Math.round(cotes.coteMin * 1000)/1000 || "";
+			document.getElementById("corDynText").innerHTML = Math.round(corDyn * 1000)/1000 || "";
+		}
+
+		function toggle2faces(visible = true) {
+			div2faces = document.getElementById("div2faces");
+			const position = document.querySelectorAll("input[type='radio'][name='position']:checked")[0].id;
+
+			if (position == "hauteur") {
+				div2faces.hidden = true;
+			} else {
+				div2faces.hidden = false;
+			}
+		}
+
+		for(pos in positions) {
+			form.addEventListener("input", toggle2faces);
+		}
+
+		form.addEventListener("input", changeText);
+
+		arbre.addEventListener("input", function(){
+			alesage.selectedIndex = 0;
+		});
+		alesage.addEventListener("input", function(){
+			arbre.selectedIndex = 0;
+		});
+		tour.addEventListener("input", hideFraiseuseForm);
+		fraiseuse.addEventListener("input", showFraiseuseForm);
+
+		function showFraiseuseForm(checked = true) {
+			document.getElementById("fraiseuseOnly").hidden = false;
+		}
+		function hideFraiseuseForm() {
+			document.getElementById("fraiseuseOnly").hidden = true;
+		}
+	</script>
+
+	<script>
+		// Save the form state
+		function saveState() {
+			const formElements = document.querySelectorAll("form input, form textarea, form select");
+			const formData = {};
+			
+			for (var i = 0; i < formElements.length; i++) {
+				const element = formElements[i];
+				if (element.type == "checkbox" || element.type == "radio") {
+					formData[element.name] = element.checked;
+				} else {
+					formData[element.name] = element.value;
+				}
+			}
+			localStorage.setItem("formData", JSON.stringify(formData));
+		}
+
+		// Attach the function to all form elements
+		var form = document.querySelector("form");
+		form.addEventListener("input", saveState);
+
+		// Restore the form state
+		function restoreState() {
+			const machine = document.querySelectorAll("input[type='radio'][name='machine']:checked")[0].id;
+			if (machine == "fraiseuse") {
+				showFraiseuseForm(false);
+			} else {
+				hideFraiseuseForm();
+			}
+			
+			const formData = JSON.parse(localStorage.getItem("formData"));
+			if (formData) {
+				const formElements = document.querySelectorAll("form input, form textarea, form select");
+				for (var i = 0; i < formElements.length; i++) {
+					const element = formElements[i];
+					if (formData[element.name]) {
+						if (element.type == "checkbox" || element.type == "radio") {
+							element.checked = formData[element.name];
+						} else {
+							element.value = formData[element.name];
+						}
+					}
+				}
+			}
+			
+			toggle2faces();
+			
+			changeText();
+		}
+
+		// On page load
+		document.addEventListener("DOMContentLoaded", restoreState);
+		document.addEventListener("DOMContentLoaded", CalcCorDyn);
+	</script>
+</html>
