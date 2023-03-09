@@ -91,9 +91,31 @@ form > div {
     margin-bottom: 1em;
 }
 
-h1 {
-    margin-left: min(10vw, 100px);
+span#check::after {
+    content: attr(data-after);
+    font-weight: bold;
+}
+
+span#check.ok::after {
     color: #1b5e20;
+}
+
+span#check.nok::after {
+    color: #b71c1c;
+}
+
+#title {
+    margin-left: min(10vw, 100px);
+}
+
+#title > img {
+    vertical-align:middle;
+}
+
+h1 {
+    vertical-align:middle;
+    color: #1b5e20;
+    display: inline-block;
 }
 
 @media all and (width <= 640px) {

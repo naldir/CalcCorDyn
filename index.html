@@ -5,30 +5,34 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		<title>CalcCorDyn</title>
-		<!--<link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAQSAAAEEgEvyUkoAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAqVJREFUOI19kc1LFAEYh5+ZcWZsXVvdNHUsbTJL1NCNiOpmRRB06AMqr10yO/QvRHSoDgXZsWNEIEFRtygqgg5pn9QK2mLsqruzNu66zn7MzkeHpWyNeq/v+3v4PbzCmYPNHyPddfmC7Sezlmtklp3kwmIpFTcLU1++FT/7vp/mPyNcG9ny5uj+DXvXLrKWQ9ywreSPklG0vVTB9pOvPmTGnk1mnv95V2MVvdTacNH2yOV9ercE6vr1gA7oADNzhXdANSCX94zVoM/7xX70yHGaIpuYmZ7Amn1ERKtYBANy18CuXXdUVQ0CLOdy1JjLpd8N3v/YyekLt/kajXLp8hUejI8zFz/ExINz9LZmEZXQyf6BgeCv+7l4fKEmaTqpX7X1weOcHx0lbZo4jsPhI0c4cewYbY17gKeE1yvBTLlaV5xftKeylsNi1mWz3sPQ0BCO6yJKEoFAgNOnTiHXhisKypo0IH6OWZ/iKXtFa5L5+u4F0akpOtrb8VyX7du28fjJE1bMGADNISjbdjXA930jZZbSogArsw+5eGGE61ev0tfTw80bN+hoWYcmTALQ1SqRmJ3G87zVLwDkS14K0CNamjf3zyKE93Jgdzv3xkZpY4KWhkqgKSRjzscwjCV279v3FwCAvrYc8BR8oKHaVxCgsV7iWzLL91gMtba2Anj9KXtrcqaUb9vUOVyvegRVhzrFYWPIp6tVoikk/4Y01ouQdMmYJi2aVgE8m8w8b9G00JC+YzgvSKRswIayafP27ksUociG9RINQRFjyQEEFFVdVfjXyIqC1tnFdDTKkuUDLiAgCALtHR3kLQvxfwCATl1na3c3kiQBoKgq/YODNIbD1Q28crk8n0gkRUny10JqAwG29/XhOI4oy7Lneh5ziQRpwyj8BHR2JpgXMeS7AAAAAElFTkSuQmCC" rel="icon" type="image/x-icon">-->
-		<link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-		<link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-		<link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-		<link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-		<link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-		<link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-		<link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-		<link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-		<link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-		<link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-		<link rel="manifest" href="/manifest.json">
-		<meta name="msapplication-TileColor" content="#ffffff">
+		<link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAQSAAAEEgEvyUkoAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAqVJREFUOI19kc1LFAEYh5+ZcWZsXVvdNHUsbTJL1NCNiOpmRRB06AMqr10yO/QvRHSoDgXZsWNEIEFRtygqgg5pn9QK2mLsqruzNu66zn7MzkeHpWyNeq/v+3v4PbzCmYPNHyPddfmC7Sezlmtklp3kwmIpFTcLU1++FT/7vp/mPyNcG9ny5uj+DXvXLrKWQ9ywreSPklG0vVTB9pOvPmTGnk1mnv95V2MVvdTacNH2yOV9ercE6vr1gA7oADNzhXdANSCX94zVoM/7xX70yHGaIpuYmZ7Amn1ERKtYBANy18CuXXdUVQ0CLOdy1JjLpd8N3v/YyekLt/kajXLp8hUejI8zFz/ExINz9LZmEZXQyf6BgeCv+7l4fKEmaTqpX7X1weOcHx0lbZo4jsPhI0c4cewYbY17gKeE1yvBTLlaV5xftKeylsNi1mWz3sPQ0BCO6yJKEoFAgNOnTiHXhisKypo0IH6OWZ/iKXtFa5L5+u4F0akpOtrb8VyX7du28fjJE1bMGADNISjbdjXA930jZZbSogArsw+5eGGE61ev0tfTw80bN+hoWYcmTALQ1SqRmJ3G87zVLwDkS14K0CNamjf3zyKE93Jgdzv3xkZpY4KWhkqgKSRjzscwjCV279v3FwCAvrYc8BR8oKHaVxCgsV7iWzLL91gMtba2Anj9KXtrcqaUb9vUOVyvegRVhzrFYWPIp6tVoikk/4Y01ouQdMmYJi2aVgE8m8w8b9G00JC+YzgvSKRswIayafP27ksUociG9RINQRFjyQEEFFVdVfjXyIqC1tnFdDTKkuUDLiAgCALtHR3kLQvxfwCATl1na3c3kiQBoKgq/YODNIbD1Q28crk8n0gkRUny10JqAwG29/XhOI4oy7Lneh5ziQRpwyj8BHR2JpgXMeS7AAAAAElFTkSuQmCC" rel="icon" type="image/x-icon">
+		<link rel="apple-touch-icon" sizes="57x57" href="./img/apple-icon-57x57.png">
+		<link rel="apple-touch-icon" sizes="60x60" href="./img/apple-icon-60x60.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="./img/apple-icon-72x72.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="./img/apple-icon-76x76.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="./img/apple-icon-114x114.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="./img/apple-icon-120x120.png">
+		<link rel="apple-touch-icon" sizes="144x144" href="./img/apple-icon-144x144.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="./img/apple-icon-152x152.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="./img/apple-icon-180x180.png">
+		<link rel="icon" type="image/png" sizes="192x192"  href="./img/android-icon-192x192.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="96x96" href="./img/favicon-96x96.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png">
+		<link rel="manifest" href="./manifest.json">
+		<meta name="msapplication-TileColor" content="#1b5e20">
 		<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-		<meta name="theme-color" content="#ffffff">
+		<meta name="theme-color" content="#1b5e20">
 		
 		<link rel="stylesheet" href="main.css">
 	</head>
 
 	<body>
-		<h1>CalcCorDyn</h1>
+		<div id="title">
+			<img src="data:image/png;base64,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vHb6GD+4/0Wy6/azfuMOwpEohekpRkfeQ1Y+5IadsGVdgkudhFKQiOokIpJaGxzH4dOREaSUrN+4cUmh1QFm6x6ep8bzJcdGYV28mKFLrtufYKhRY2LqJSbPHqfmQjwEN22y6OuOLNXMJYAiIUk2ofF5MWjsfN9nfHSUVDpNMpVaqGUQZGbg/FSpXVVKWUIs6w7wFcTCBjsGTXayECxKKXzFijBzZuqSTEJH+Q4gEULQbDQYHx1lZ3KhFZOL5hTGcnZpNGdTrnk4rgIUmgwiRtcEslPCfaXwfYXnK/zVy1MQPRp0d+nLoqtcKs0n1HkPzQG9eaby5EOzzpaelBHRDePGgb6u3kwMdOmjSZ90LGjkU3E9KAemxNRlADrnMTr99UWgQgj6sgZi0bVNCEHbtmnW64TD4WVAzdm698S7wzWAcHfvmj876R29n7UlbdvGbjVx7DrKbWEIm5DWIGZ6ZOKK3i5BJqGRSehkuwySUZ1IKIDVtODDmhT0d1vo2lJS3/dxXfeSHlqiQ00KFQmHCHXI51yglMLzfFw3qE0TrRZnx6t8OvxvnFadSAgSkUDA6YROT5dOX9agP2tRrDjoEjwWgllIia7rqwIFVCy+hy3sTNMkmiYJhUzi8SiZbJrZUpHJ8+dpOIJaWfF5UaF8B6XagI+hBXpsu5JOE4FSCsuyiESjS6Psf7W5RYQQ9KxZQz6Xw/d9tM4RLY2Z4NJvXHTZyvb0EAqH59eSV/DdKwLLdHeTzmQu2xWKi+aEIxH6161bUkK+FCAAwzDYsGkT0Vhs1VZVKYVuGGwYHCSeSCwZ/6UBKaVIpdPs2ruXTDY7/+7iMUopotEo23ft4iudFnmxfSENXcq6Uin27N/P5Pnz5CYnaTYa+L6PEALTsoKLwMAA0XicSxW+FYEUiMX3pf/GU7phsG7DBtb299NqtfA9DyElpmVhmSYIgbqo1ijfD+autG51dtY99d576CvcNK/YhFjoES+zOaUU0/m89x+rSKeB1bykZgAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMy0wMi0wMVQyMTo0NjozMiswMDowMHcXVPUAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjMtMDItMDFUMjE6NDY6MzIrMDA6MDAGSuxJAAAAIHRFWHRzb2Z0d2FyZQBodHRwczovL2ltYWdlbWFnaWNrLm9yZ7zPHZ0AAAAYdEVYdFRodW1iOjpEb2N1bWVudDo6UGFnZXMAMaf/uy8AAAAYdEVYdFRodW1iOjpJbWFnZTo6SGVpZ2h0ADE5MkBdcVUAAAAXdEVYdFRodW1iOjpJbWFnZTo6V2lkdGgAMTky06whCAAAABl0RVh0VGh1bWI6Ok1pbWV0eXBlAGltYWdlL3BuZz+yVk4AAAAXdEVYdFRodW1iOjpNVGltZQAxNjc1Mjg3OTkyioBqRAAAAA90RVh0VGh1bWI6OlNpemUAMEJClKI+7AAAAFZ0RVh0VGh1bWI6OlVSSQBmaWxlOi8vL21udGxvZy9mYXZpY29ucy8yMDIzLTAyLTAxL2ZiNmJmM2Y0ZDE4ODMxNzllZDVjOGVmMjZiYzM5NTYxLmljby5wbmeXudtBAAAAAElFTkSuQmCC">
+			<h1>CalcCorDyn</h1>
+		</div>
+
 		<form>
 			<input type="radio" name="typeCoteVoulue" value="typeMoyenne" id="typeMoyenne" class="tab" checked>
 			<label for="typeMoyenne" class="tabLabel">Cote moyenne</label>
@@ -41,7 +45,7 @@
 
 			<div>
 				<label class="align">
-					<span>Cote mesurée</span>
+					<span id="check">Cote mesurée</span>
 					<input type="text" min="0" name="coteMesuree" id="coteMesuree">
 				</label>
 			</div>
@@ -133,7 +137,7 @@
 
 					<label class="nowrap">
 						<input type="radio" name="geometrie" value="simple" id="simple">
-						<span>Hauteur ou cote simple</span>
+						<span>Cote simple ou hauteur</span>
 					</label>
 				</div>
 			</div>
