@@ -1,36 +1,37 @@
 function calcAjust(nominal, toleranceClass) {
-    const aju = DB[toleranceClass].find(e => e.DNmin < nominal && e.DNmax > nominal);
+    const aju = DB[toleranceClass].find(e => e.DNmin <= nominal && e.DNmax > nominal);
+    if (aju == undefined) {
+        alert("cet ajustement n'est pas disponible pour cette dimmension.")
+    }
  
-    const upper = aju.upTol * 0.001;
-    const lower = aju.lowTol * 0.001;
+    const tolSup = aju.upTol * 0.001;
+    const tolInf = aju.lowTol * 0.001;
 
     return ({
-        "coteMax" : nominal + upper,
-        "coteMin" : nominal + lower,
-        "coteMoyenne" : nominal + ((upper + lower) / 2)});
+        "coteMax" : nominal + tolSup,
+        "coteMin" : nominal + tolInf,
+        "tolSup" : tolSup,
+        "tolInf" : tolInf,
+        "coteMoyenne" : nominal + ((tolSup + tolInf) / 2)});
 }
 
-function calcCoteMoyenne() {
-    var coteMoyenne = null;
-    var coteMin = null;
-    var coteMax = null;
-    
+function calcCoteMoyenne() {    
     const coteType = document.querySelector("input[type='radio'][name='typeCoteVoulue']:checked").id;
     switch (coteType){
         case 'typeMoyenne':
-            coteMoyenne = parseFloat(document.getElementById("moyenne").value);
+            var coteMoyenne = parseFloat(document.getElementById("moyenne").value);
             break;
 
         case 'typeTolerancee':
             var coteNominale = parseFloat(document.getElementById("nominaleTol").value);
 
-            const sup = parseFloat(document.getElementById("toleranceSup").value);
-            coteMax = coteNominale + sup;
+            var tolSup = parseFloat(document.getElementById("toleranceSup").value);
+            var coteMax = coteNominale + tolSup;
 
-            const inf = parseFloat(document.getElementById("toleranceInf").value);
-            coteMin = coteNominale + inf;
+            var tolInf = parseFloat(document.getElementById("toleranceInf").value);
+            var coteMin = coteNominale + tolInf;
 
-            coteMoyenne = coteNominale + ((sup + inf) / 2);
+            var coteMoyenne = coteNominale + ((tolSup + tolInf) / 2);
             break;
 
         case 'typeAjustee':
@@ -38,14 +39,19 @@ function calcCoteMoyenne() {
             const toleranceClass = arbre.value || alesage.value
             const ajus = calcAjust(coteNominale, toleranceClass);
             
-            coteMin = ajus.coteMin;
-            coteMax = ajus.coteMax;
-            coteMoyenne = ajus.coteMoyenne;
+            var coteMin = ajus.coteMin;
+            var coteMax = ajus.coteMax;
+            var tolSup = ajus.tolSup;
+            var tolInf = ajus.tolInf;
+            var coteMoyenne = ajus.coteMoyenne;
             break;
     }
+
     return ({
         "coteMax" : coteMax,
         "coteMin" : coteMin,
+        "tolInf" : tolInf,
+        "tolSup" : tolSup,
         "coteMoyenne" : coteMoyenne});
 }
 

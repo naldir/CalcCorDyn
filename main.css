@@ -80,23 +80,62 @@ form label.nowrap {
     line-height: 1.25em;
 }
 
-.outputs {
+#outputs {
     border: 2px solid #1b5e20;
     border-radius: 3px;
     padding: 10px;
     display: inline-block;
 }
 
+#outputs .nok::after {
+    content: "";
+}
+
+#outputs .nok::after {
+    content: " ✗";
+    font-weight: bold;
+    color: #b71c1c;
+}
+
 form > div {
     margin-bottom: 1em;
 }
 
-h1 {
-    margin-left: min(10vw, 100px);
+span#check::after {
+    content: attr(data-after);
+    font-weight: bold;
+}
+
+span#check.ok::after {
     color: #1b5e20;
 }
 
-@media all and (width <= 640px) {
+span#check.nok::after {
+    color: #b71c1c;
+}
+
+#title {
+    margin-left: min(10vw, 100px);
+}
+
+#title > img {
+    vertical-align:middle;
+}
+
+h1 {
+    vertical-align:middle;
+    color: #1b5e20;
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: medium;
+}
+
+@media all and (max-width: 641px) {
     input.tab + label {
         width: calc(100vw - 60px);
         margin: 3px 0 3px 0;
@@ -116,7 +155,7 @@ h1 {
         text-align: center;
     }
 
-    .outputs {
+    #outputs {
         display: block;
     }
 }

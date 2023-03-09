@@ -1,1 +1,6 @@
-android
+android/
+bazar/
+index_standalone.html
+standalone.html
+calcCorDyn.html
+makeStandalone.js
