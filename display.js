@@ -71,8 +71,8 @@ function changeText() {
 
 
     document.getElementById("moyenneText").innerHTML = cotes.coteMoyenne || "";
-    document.getElementById("maxText").innerHTML = cotes.coteMax + supText || "";
-    document.getElementById("minText").innerHTML = cotes.coteMin + infText || "";
+    document.getElementById("maxText").innerHTML = (cotes.coteMax || "") + supText;
+    document.getElementById("minText").innerHTML = (cotes.coteMin || "") + infText;
     document.getElementById("corDynText").innerHTML = corDyn || "";
 
     checkTol(mesuree.value, cotes.coteMin, cotes.coteMax);
