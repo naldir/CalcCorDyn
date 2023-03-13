@@ -1,18 +1,21 @@
 function calcAjust(nominal, toleranceClass) {
-    const aju = DB[toleranceClass].find(e => e.DNmin <= nominal && e.DNmax > nominal);
-    if (aju == undefined) {
-        alert("cet ajustement n'est pas disponible pour cette dimmension.")
-    }
- 
-    const tolSup = aju.upTol * 0.001;
-    const tolInf = aju.lowTol * 0.001;
+    const ajuSelected = arbre.value || alesage.value;
+    if (ajuSelected && nominal){
+        const aju = DB[toleranceClass].find(e => e.DNmin <= nominal && e.DNmax > nominal);
+        if (aju == undefined) {
+            alert("cet ajustement n'est pas disponible pour cette dimmension.")
+        }
+    
+        const tolSup = aju.upTol * 0.001;
+        const tolInf = aju.lowTol * 0.001;
 
-    return ({
-        "coteMax" : nominal + tolSup,
-        "coteMin" : nominal + tolInf,
-        "tolSup" : tolSup,
-        "tolInf" : tolInf,
-        "coteMoyenne" : nominal + ((tolSup + tolInf) / 2)});
+        return ({
+            "coteMax" : nominal + tolSup,
+            "coteMin" : nominal + tolInf,
+            "tolSup" : tolSup,
+            "tolInf" : tolInf,
+            "coteMoyenne" : nominal + ((tolSup + tolInf) / 2)});
+    }
 }
 
 function calcCoteMoyenne() {    
@@ -39,11 +42,13 @@ function calcCoteMoyenne() {
             const toleranceClass = arbre.value || alesage.value
             const ajus = calcAjust(coteNominale, toleranceClass);
             
-            var coteMin = ajus.coteMin;
-            var coteMax = ajus.coteMax;
-            var tolSup = ajus.tolSup;
-            var tolInf = ajus.tolInf;
-            var coteMoyenne = ajus.coteMoyenne;
+            if (ajus) {
+                var coteMin = ajus.coteMin;
+                var coteMax = ajus.coteMax;
+                var tolSup = ajus.tolSup;
+                var tolInf = ajus.tolInf;
+                var coteMoyenne = ajus.coteMoyenne;
+            }
             break;
     }
 
