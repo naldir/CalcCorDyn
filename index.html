@@ -38,11 +38,14 @@
 			<input type="radio" name="typeCoteVoulue" value="typeMoyenne" id="typeMoyenne" class="tab" checked>
 			<label for="typeMoyenne" class="tabLabel">Cote moyenne</label>
 
+			<input type="radio" name="typeCoteVoulue" value="typeGenerale" id="typeGenerale" class="tab">
+			<label for="typeGenerale" class="tabLabel">Tolérance générale</label>
+
 			<input type="radio" name="typeCoteVoulue" value="typeTolerancee" id="typeTolerancee" class="tab">
-			<label for="typeTolerancee" class="tabLabel">Cote nominale tolérancée</label>
+			<label for="typeTolerancee" class="tabLabel">Tolérance</label>
 
 			<input type="radio" name="typeCoteVoulue" value="typeAjustee" id="typeAjustee" class="tab">
-			<label for="typeAjustee" class="tabLabel">Cote nominale ajustée</label>
+			<label for="typeAjustee" class="tabLabel">Ajustement</label>
 
 			<div>
 				<label class="align">
@@ -53,9 +56,30 @@
 
 			<div class="tabContent moyenne">
 				<label class="align">
-					<span>moyenne</span>
+					<span>Moyenne</span>
 					<input type="text" min="0" name="moyenne" id="moyenne">
 				</label>
+			</div>
+
+			<div class="tabContent generale">
+				<div>
+					<label class="align">
+						<span>Cote nominale</span>
+						<input type="text" min="0" name="nominaleGen" id="nominaleGen">
+					</label>
+				</div>
+
+				<div>
+					<label class="align">
+						<span>Précision</span>
+						<select name="precision" id="precision">
+							<option value="f">f (fin)</option>
+							<option value="m" selected="selected">m (moyen)</option>
+							<option value="c">c (large)</option>
+							<option value="v">v (très large)</option>
+						</select>
+					</label>
+				</div>
 			</div>
 
 			<div class="tabContent tolerancee">

@@ -18,11 +18,39 @@ function calcAjust(nominal, toleranceClass) {
     }
 }
 
+function calcGen(nominal, precision) {
+    const gen = DB2768[precision].find(e => e.DNmin <= nominal && e.DNmax > nominal);
+    if (gen == undefined && nominal) {
+        alert("cette précision n'est pas disponible pour cette dimmension.")
+    }
+
+    return ({
+        "coteMax" : nominal + gen.Tol,
+        "coteMin" : nominal - gen.Tol,
+        "tolSup" : gen.Tol,
+        "tolInf" : -gen.Tol,
+        "coteMoyenne" : nominal});
+}
+
+
 function calcCoteMoyenne() {    
     const coteType = document.querySelector("input[type='radio'][name='typeCoteVoulue']:checked").id;
     switch (coteType){
         case 'typeMoyenne':
             var coteMoyenne = parseFloat(document.getElementById("moyenne").value);
+            break;
+
+        case 'typeGenerale':
+            var coteNominale = parseFloat(document.getElementById("nominaleGen").value);
+            const tolGen = calcGen(coteNominale, precision.value);
+            
+            if (tolGen) {
+                var coteMin = tolGen.coteMin;
+                var coteMax = tolGen.coteMax;
+                var tolSup = tolGen.tolSup;
+                var tolInf = tolGen.tolInf;
+                var coteMoyenne = tolGen.coteMoyenne;
+            }
             break;
 
         case 'typeTolerancee':

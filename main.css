@@ -8,6 +8,7 @@ input.tab { display: none; }
 input.tab + label { display: inline-block }
 .tabContent { display: none }
 input.tab#typeMoyenne:checked ~ .tabContent.moyenne,
+input.tab#typeGenerale:checked ~ .tabContent.generale,
 input.tab#typeTolerancee:checked ~ .tabContent.tolerancee,
 input.tab#typeAjustee:checked ~ .tabContent.ajustee { display: block; }
 

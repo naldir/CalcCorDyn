@@ -1,5 +1,6 @@
 var form = document.querySelector("form");
 const mesuree = document.getElementById("coteMesuree");
+const precision = document.getElementById("precision");
 const arbre = document.getElementById("arbre");
 const alesage = document.getElementById("alesage");
 const tour = document.getElementById("tour");
@@ -38,6 +39,8 @@ function checkTol(mesuree, min, max) {
         checkSpan.setAttribute("title", "Cote ok");
         checkSpan.classList.add("ok");
         checkSpan.classList.remove("nok");
+        minText.classList.remove("nok");
+        maxText.classList.remove("nok");
     } else {
         checkSpan.setAttribute("data-after", " ✗");
         checkSpan.setAttribute("title", "Cote hors tolérance");
